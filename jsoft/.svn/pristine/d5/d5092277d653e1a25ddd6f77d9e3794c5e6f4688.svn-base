@@ -1,0 +1,22 @@
+<?php
+define('DB_HOST', 'localhost'); // ccrm
+define('DB_USER', 'root');
+define('DB_PASSWORD', '');
+define('DB_NAME', 'billing_software');
+
+define('DB_DRIVER', 'mysqli');
+define('DB_SAVE_Q', true);
+$hostname = ($_SERVER['HTTP_HOST']);
+$db_failover_server = array();
+define('BASE_URL_ADMIN', "http://$hostname/iconsoft/billing/");
+//define('BASE_URL_USER', "http://$hostname/iconradius/user/");
+define('ENVIRONMENT',  'development');
+//define('ENVIRONMENT',  'production');
+
+define('UPLOAD_DIR', '/usr/local/etc/iconrepo');
+define('REGI_BTN_HIDE',false);
+
+//define('SHOP_TYPE',1); //1 = general shop pos
+//define('SHOP_TYPE',2); //2 = optics
+//define('SHOP_TYPE',3); //3 = tailor
+//define('SHOP_TYPE',4); //4 = restaurant

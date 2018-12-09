@@ -1,0 +1,48 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class SaleModel extends CI_Model {
+
+public function getProInfo($id){
+	
+            $this->db->select('*');
+            $this->db->from('icw_pro_0317');
+            $this->db->where('icw_pi0317',$id);
+			$query = $this->db->get()->row();
+			
+			
+			//$this->db->select('a.icw_taxName0317,b.icw_subTaxName0317,b.icw_subTaxPercent0317');
+            //$this->db->from('icw_tax_0317 a');
+           // $this->db->join('icw_taxmap_0317 b','b.icw_taxId0317=a.icw_id0317');
+           
+            $query2 = $this->db->get('icw_tax_0317')->result();
+          
+			//$jsonData= array();
+			//$jsonData['taxData']=$query;
+			//$jsonData['subTaxData']=$query2;
+
+			if($query && $query2){
+				$rtdata= array('query'=>$query,'query2'=>$query2);
+				return $rtdata;
+			}
+	
+	
+	
+}
+
+public function getSubTaxInfo($id){
+	
+            $this->db->select('icw_subTaxName0317,icw_subTaxPercent0317');
+            $this->db->from('icw_taxmap_0317');
+            $this->db->where('icw_taxId0317',$id);
+			$query = $this->db->get()->result();
+			//print_r($query);
+			return $query;
+			
+}
+
+
+
+
+}
+?>

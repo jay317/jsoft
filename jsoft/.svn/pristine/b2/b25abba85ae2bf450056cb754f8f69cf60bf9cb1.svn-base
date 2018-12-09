@@ -1,0 +1,63 @@
+
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->    
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="active treeview">
+          <a href="#">
+            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+        </li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-files-o"></i>
+            <span>Product</span>
+            <span class="pull-right-container">
+              <span class="label label-primary pull-right">3</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+			<li><a href="<?php echo site_url('product/index');?>"><i class="fa fa-circle-o"></i> Products list</a></li>
+            <li><a href="<?php echo site_url('Category/index');?>"><i class="fa fa-circle-o"></i>Products Category list</a></li>
+            <li><a href="<?php echo site_url('product/proTax');?>"><i class="fa fa-circle-o"></i>Products Tax</a></li>
+          </ul>
+        </li>
+		 <li class="treeview">
+          <a href="#">
+            <i class="fa fa-files-o"></i>
+            <span>Sale</span>
+            <span class="pull-right-container">
+              <span class="label label-primary pull-right">4</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo site_url('sale/index');?>"><i class="fa fa-circle-o"></i>Sale</a></li>
+            <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
+          </ul>
+        </li>
+         <li class="treeview">
+          <a href="#">
+            <i class="fa fa-files-o"></i>
+            <span>Client</span>
+            <span class="pull-right-container">
+              <span class="label label-primary pull-right">4</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo site_url('client/index');?>"><i class="fa fa-circle-o"></i>Clients</a></li>
+            <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
+            <li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
+            <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
+          </ul>
+        </li>
+
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>

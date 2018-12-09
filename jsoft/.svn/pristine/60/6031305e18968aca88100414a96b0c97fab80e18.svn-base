@@ -1,0 +1,96 @@
+<?php
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+
+class Sale extends CI_Controller {
+
+	public function __construct() {
+
+		parent::__construct();
+		if(!$this->session->userdata("username"))
+		{
+			redirect('welcome/index');
+		}
+			
+		$this->load->model('ProductModel');
+		$this->load->model('CategoryModel');
+		$this->load->model('SaleModel');
+
+	}
+
+
+	public function index() {
+		$data['getPcat']=$this->CategoryModel->getProductCat();
+		$data['getProduct']=$this->ProductModel->getProductsDetail();
+		//$this->load->view('product/sales',$data);
+		$this->load->view('sales/pointofsale',$data);
+	}
+
+	public function getProInfo()
+	{
+	 $id=$_REQUEST['dt'];
+	 $getdata=$this->SaleModel->getProInfo($id);
+		if($getdata){
+			$query=$getdata['query'];
+			$query2=$getdata['query2'];
+			?>
+// echo json_encode($jsonData);
+<tr class="jRemove">
+	<td><i class="fa fa-times removeRow" aria-hidden="true"
+		style="cursor: pointer"></i></td>
+	<td><?php echo $query->icw_pn0317;?></td>
+	<td><input class='qty form-control' name='qty[]' value='1'
+		style='width: 40px'></td>
+	<td><input type='text' readonly='readonly'
+		class='selling_price form-control input-border' name='selling_price[]'
+		value='<?php echo $query->icw_prs0317;?>'></td>
+	<td><input type='text' class='itemtotal form-control input-border'
+		readonly='readonly' value="<?php echo $query->icw_prs0317;?>" /><input
+		type='hidden' name='warehouse_id[]' value='"+warehouse_id+"' /></td>
+	<td><input type='text' readonly='readonly'
+		class='tax_rate form-control input-border' name='tax_rate[]' value="">
+	</td>
+	<td><select class="optsel"><?php foreach($query2 as $qry){?>
+			<option value="<?php echo $qry->icw_id0317;?>">
+			<?php echo $qry->icw_taxName0317;?>
+			</option>
+			<?php }?>
+	</select></td>
+	<td>200</td>
+</tr>
+			<?php   }
+			else
+			{
+				return false;
+			}
+	}
+
+	public function getSubTaxInfo()
+	{
+		echo  $id=$_REQUEST['dt'];
+	 $amount=$_REQUEST['dt2'];
+	 $query = $this->SaleModel->getSubTaxInfo($id);
+	   if($query){
+	  $sum=0; $i=0;
+	  foreach($query as $jqry)
+	  { ?>
+	  	
+	  <tr class="taxTr<?php $i++; echo $i;?>" id="<?php echo $i ?>"> 
+	  <td><?php echo $jqry->icw_subTaxName0317 . " ".  $jqry->icw_subTaxPercent0317. "%&nbsp;" . "@ &nbsp;amount &nbsp;" . $amount;?></td>
+	  <td>
+	  <?php
+	  $txt=$jqry->icw_subTaxPercent0317;
+	  $cal=$amount * ($txt/100);
+	  echo "&nbsp;&nbsp;". $cal;
+	  $sum+=$cal;
+	  ?>
+	  </td>
+	  </tr>
+			<?php }?>
+			<tr class="taxTr<?php echo $id;?>"><td></td><td></td><td><?php echo $sum;?><input type="hidden" value="<?php echo $sum;?>" class="totalTaxAmount"></td></tr>
+			<?php
+			}
+	}
+	
+}
+?>

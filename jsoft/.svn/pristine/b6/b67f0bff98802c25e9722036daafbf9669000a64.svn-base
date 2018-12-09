@@ -1,0 +1,199 @@
+<?php if($type=='ord'){?>
+<table
+	class="table table-responsive panel panel-default table-bordered p20">
+	<tr>
+		<th style="width: 10px">#</th>
+		<th>Name</th>
+		<th>Quantity</th>
+		<th>Remove</th>
+	</tr>
+<?php $i=1; foreach($bill_data as $row){?>
+<tr style="margin: 15px;">
+		<td><?php echo $i++;?></td>
+		<td style="width: 10%;"><span style="margin: 10px;"><?php echo ucwords($row->items);?></span></td>
+		<td style="width: 2%;"><?php echo $row->qty;?></td>
+		<td style="width: 2%;"><span class="badge badge-danger"
+			onclick="deleteOrd('<?php echo $row->orderid;?>','<?php echo $row->items;?>')"><i
+				class="fa fa-trash"></i></span></td>
+	</tr>
+<?php } ?>
+</table>
+<input type="hidden" value="<?php echo $row->tblno;?>" id="hidden_tblno">
+<div class="panel-footer">
+	<span class="label label-info">servitor:&nbsp;<?php echo $row->servno;?></span><?php if($row->orderstatus == 1){echo '<span class="badge badge-success">Ready</span>';}else{echo '<span class="badge badge-danger">Processing</span>';}?>
+	
+</div>
+<script>
+function confirmCancle(){
+	swal({
+		  title: 'Are you sure?',
+		  text: "You won't be able to revert this!",
+		  type: 'warning',
+		  showCancelButton: true,
+		  confirmButtonColor: '#3085d6',
+		  cancelButtonColor: '#d33',
+		  confirmButtonText: 'Yes, cancel it!',
+		  cancelButtonText: 'No, cancel!',
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false,
+		  preConfirm: function(){ 
+		  	url = "<?php echo site_url();?>restaurant/getCancle/?tblno=<?php echo $row->tblno;?>";
+			$.ajax({
+			    type: 'POST',
+			    url: url,
+			    data:[],
+			    success: function(response) { 
+			        if(response=='1'){
+			        	swal(
+			        		    'Cancelled!',
+			        		    'Your order has been Cancelled.',
+			        		    'success'
+			        	).then(function () {
+			        		 window.location.reload();
+			        	})
+			            }else{
+			            	swal(
+						   		      'Not Cancelled',
+						   		      'Your order is safe :)',
+						   		      'error'
+						   		    )
+						   	} 
+			    },
+			    error: function(response) {	
+			    	         
+			    }
+			    });
+
+			
+		}
+	})
+}
+</script>
+
+<?php } ?>
+
+
+<?php if($type=='bil'){?>
+
+<style>
+hr {
+	border: none;
+	border-top: 1px dotted black;
+	color: #fff;
+	background-color: #fff;
+	height: 1px;
+	width: 100%;
+	margin: 0em;
+}
+</style>
+
+<table class="table-responsive1 print-table">
+	<tr>Date:<?php echo $today = date("F j, Y, g:i a");?></tr>
+<?php $totSum=0; foreach($bill_data as $row){?>
+<tr>
+		<td style="width: 10%;"><?php echo ucwords($row->items);?></td>
+		<td style="width: 2%;"><?php echo $row->qty;?></td>
+		<td style="width: 2%;"><?php echo $row->price;?></td>
+		<td style="width: 2%;"><?php echo $row->total;?></td>
+	</tr>
+<?php } ?>
+<tr>
+		<td style="width: 10%;"></td>
+		<td style="width: 2%;"></td>
+		<td style="width: 2%;"><hr>Total:</td>
+		<td style="width: 2%;"><hr><?php echo getCurrencyDouble($finalCalData['totalAmt']);?></td>
+	</tr>
+	<tr>
+		<td style="width: 10%;"></td>
+		<td style="width: 2%;"></td>
+		<td style="width: 2%;"><?php $taxType=$finalCalData['taxType']; echo $taxType->icw_taxName0317;?></td>
+		<td style="width: 2%;"><?php echo getCurrencyDouble($finalCalData['taxAmt']);?></td>
+	</tr>
+	<!--<tr><td style="width:10%;"></td><td style="width:2%;"></td><td style="width:2%;" colspan=2><span class="list-unstyled" style="font-size:10px;"><?php //$subtaxType=$finalCalData['subtaxType']; foreach($subtaxType as $rec){ ?> <span><?php// echo $rec->icw_subTaxName0317 . "&nbsp;" . $rec->icw_subTaxPercent0317 ."%&nbsp;&nbsp;";?></span><?php //} ?> </span></td></tr>-->
+	<tr>
+		<td style="width: 10%;"></td>
+		<td style="width: 2%;"></td>
+		<td style="width: 2%;"><strong>Grand Total:</strong></td>
+		<td style="width: 2%;"><strong><?php echo getCurrencyDouble($finalCalData['grandTotal']);?></strong></td>
+	</tr>
+</table>
+
+<div class="printArea" style="display: none;">
+<?php $settingDetails=$this->session->userdata('settingDetails');?>
+<table class="table1 table-responsive table-barderd">
+		<tr>
+			<td colspan=2><center>
+					<ul class="list-unstyled">
+						<li><?php if($settingDetails){ echo strtoupper($settingDetails->icw_shop_name0317);}?></li>
+						<li><?php if($settingDetails){ echo ucwords($settingDetails->icw_shop_Address0317);}?></li>
+						<li><?php if($settingDetails){ echo "Mob.&nbsp;" . strtoupper($settingDetails->icw_shop_mobile0317);}?></li>
+					</ul>
+				</center></td>
+		</tr>
+		<tr>
+			<td>Date: &nbsp;</td>
+			<td><?php echo $today = date("d.m.Y");?></td>
+		</tr>
+		<tr>
+			<td>GSTIN: &nbsp;</td>
+			<td><?php if($settingDetails){ echo strtoupper($settingDetails->icw_shop_gstin0317);}?></td>
+		</tr>
+		<tr>
+			<td colspan=3><hr></td>
+		</tr>
+		<tr>
+			<td>Name</td>
+			<td style="text-align: center;">Qty</td>
+			<td>Value</td>
+		</tr>
+		<tr>
+			<td colspan=3><hr></td>
+		</tr>
+	<?php $totSum=0; $i=0; foreach($bill_data as $row){ ?>
+	<tr>
+			<td><?php echo ucwords(substr($row->items,0,12));?></td>
+			<td style="text-align: center;"><?php echo $row->qty;?></td>
+			<td><?php echo $row->total;?></td>
+		</tr>
+	<?php $i++; } ?>
+	<tr>
+			<td colspan=3><hr></td>
+		</tr>
+		<tr>
+			<td>Items: &nbsp;<?php echo $i;?></td>
+			<td style="text-align: right;">Total:&nbsp;</td>
+			<td><?php echo getCurrencyDouble($finalCalData['totalAmt']);?></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td style="text-align: right;"><?php $taxType=$finalCalData['taxType']; echo $taxType->icw_taxName0317;?>&nbsp;</td>
+			<td><?php echo getCurrencyDouble($finalCalData['taxAmt']);?></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td style="text-align: right;">Grand Total: &nbsp;</td>
+			<td><?php echo getCurrencyDouble($finalCalData['grandTotal']);?></td>
+		</tr>
+		<tr>
+			<td colspan=3><hr></td>
+		</tr>
+		<tr>
+			<td colspan=2>***This is computer generated receipt no signature
+				required***</td>
+		
+		
+		<tr>
+			<td colspan=2><center>
+					<strong>Thank You!</strong>
+				</center></td>
+		</tr>
+	</table>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-success" onclick="PrintElem('.printArea');">Print
+		Bill</button>
+	<button class="btn btn-danger"
+		onclick="getFree('<?php echo $row->tblno;?>')">Free Table</button>
+</div>
+<?php }?>

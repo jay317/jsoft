@@ -1,0 +1,10 @@
+<?php
+function getCurrencyDouble($amount){
+	return "<i class=\"fa fa-inr\"></i>".round($amount,2);
+}
+
+function getDateFormat($date){
+	$dt=$date;
+	$newDate=date_format( new DateTime($dt),'d/m/Y');
+	return $newDate;
+}

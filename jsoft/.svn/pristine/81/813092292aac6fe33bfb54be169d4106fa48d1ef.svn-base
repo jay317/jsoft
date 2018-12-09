@@ -1,0 +1,138 @@
+<?php 
+ if(!$this->session->userdata("username"))
+            {
+                 redirect('welcome/index');
+            }
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>BillingSoft | Dashboard</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"></link>
+  
+  <!-- Bootstrap 3.3.7  & jquery 3.2.1-->
+  <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/bootstrap/css/bootstrap.min.css"></link>
+  <script src="<?php echo base_url();?>assets/plugins/jQuery/jquery-3.2.1.min.js"></script>
+  <script src="<?php echo base_url();?>assets/plugins/jQueryUI/jquery-ui.min.js"></script>
+  <script src="<?php echo base_url();?>assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/jQueryUI/jquery-ui.min.css">
+  <script src="<?php echo base_url();?>assets/plugins/jquery-validation-1.17.0/dist/jquery.validate.min.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="<?php echo base_url();?>assets/font-awesome/css/font-awesome.min.css"></link>
+  <!-- Theme style -->
+  <link rel="stylesheet" href="<?php echo base_url();?>assets/dist/css/AdminLTE.min.css"></link>
+  <script src="<?php echo base_url();?>assets/dist/js/adminlte.min.js"></script>
+  <link rel="stylesheet" href="<?php echo base_url();?>assets/dist/css/skins/_all-skins.min.css"></link>
+  <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/billingCss/billingCss.css"></link>
+  <!-- Date Picker -->  
+  <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datepicker/datepicker3.css"></link>
+  <script src="<?php echo base_url();?>assets/plugins/datepicker/bootstrap-datepicker.js"></script>
+  <!-- bootstrap2-toggle -->
+  <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/bootstrap-toggle/bootstrap-toggle.min.css"></link>
+  <script src="<?php echo base_url();?>assets/plugins/bootstrap-toggle/bootstrap-toggle.min.js"></script>
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/daterangepicker/daterangepicker.css"></link>
+  <script src="<?php echo base_url();?>assets/plugins/daterangepicker/daterangepicker.js"></script>
+ <!-- Tinymce -->
+ <script src="<?php echo base_url();?>assets/plugins/ckeditor/ckeditor.js"></script>
+<!-- Bootstrap WYSIHTML5 -->
+<script src=".<?php echo base_url();?>assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script> 
+ <!-- J datatables -->
+ <script src="<?php echo base_url();?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
+ <script src="<?php echo base_url();?>assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+ <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datatables/jquery.dataTables.min.css"></link>
+ <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datatables/dataTables.bootstrap.css"></link>
+ <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datatables/jquery.dataTables_themeroller.css"></link>
+
+ <link  rel="stylesheet" href="<?php echo base_url();?>assets/plugins/select2/select2.min.css"></link>
+ <script src="<?php echo base_url();?>assets/plugins/select2/select2.min.js"></script>
+  
+<script src="<?php echo base_url();?>assets/plugins/chartjs/highcharts.js"></script>
+<script src="<?php echo base_url();?>assets/plugins/chartjs/data.js"></script>
+<script src="<?php echo base_url();?>assets/plugins/chartjs/drilldown.js"></script>
+  <!-- Google Font -->
+  <!--  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">-->
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="<?php echo site_url('mainController/dashboard');?>" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>I</b>CW</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>Icon</b>Billing</span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+            <li class="bg-info1"><a href="<?php echo site_url('sale/index');?>" class="btn btn-success btn-js">Point Of Sale</a></li>     
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+			<?php if($_SESSION['user_proImg']!='' && $_SESSION['user_id']!=''){?>
+              <img src="<?php echo base_url();?>uploads/user-images/<?php echo $_SESSION['user_proImg'];?>" class="user-image" alt="User Image">
+			<?php }else{?>
+			<img src="<?php echo base_url();?>assets/dist/img/avatar.png" class="user-image" alt="User Image">
+			<?php } ?>
+              <span class="hidden-xs"><?php 
+			  if($_SESSION['username']!='' && $_SESSION['user_id']!=''){ echo $_SESSION['username']; }
+			  ?>
+			  </span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+				<?php if($_SESSION['user_proImg']!='' && $_SESSION['user_id']!=''){?>
+                <img src="<?php echo base_url();?>uploads/user-images/<?php echo $_SESSION['user_proImg'];?>" class="img-circle" alt="User Image">
+				<?php }else{?>
+				<img src="<?php echo base_url();?>assets/dist/img/avatar.png" class="user-image" alt="User Image">
+				<?php } ?>
+                <p>
+				<?php if($_SESSION['userFname']!='' && $_SESSION['user_id']!=''){echo ucwords($_SESSION['userFname']);} else{}?>
+                  <small><?php if($_SESSION['usertype']!='' && $_SESSION['user_id']!=''){echo strtoupper($_SESSION['usertype']);} else{}?></small>
+                </p>
+              </li>
+              <!-- Menu Body 
+              // <li class="user-body">
+                // <div class="row">
+                  // <div class="col-xs-4 text-center">
+                    // <a href="#">Followers</a>
+                  // </div>
+                  // <div class="col-xs-4 text-center">
+                    // <a href="#">Sales</a>
+                  // </div>
+                  // <div class="col-xs-4 text-center">
+                    // <a href="#">Friends</a>
+                  // </div>
+                // </div>
+               
+              // </li>
+               -->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="<?php echo site_url('mainController/profile');?>" class="btn btn-default btn-flat">Profile</a>
+                </div>
+                <div class="pull-right">
+                  <a href="<?php echo site_url('mainController/logout');?>" class="btn btn-default btn-flat">Sign out</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+         
+        </ul>
+      </div>
+    </nav>
+  </header>

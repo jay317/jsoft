@@ -1,0 +1,209 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+
+class Product extends CI_Controller {
+
+	public function __construct() {
+		
+		parent::__construct();
+	     if(!$this->session->userdata("username"))
+            {
+                 redirect('welcome/index');
+            }
+		 
+		$this->load->model('ProductModel');
+		$this->load->model('CategoryModel');
+		
+	}
+
+
+public function index() {
+	
+$data['getProduct']=$this->ProductModel->getProductsDetail();
+$this->load->view('product/product_list',$data);
+
+}
+public function addPro()
+{
+	$data['getPcat']=$this->CategoryModel->getProductCat();
+	$this->load->view('product/product_add',$data);
+}
+
+public function addProduct()
+{
+		//print_r($_REQUEST);
+		$categoryName = $this->input->post('categoryName');
+		$productName = $this->input->post('productName');
+		$productCode = $this->input->post('productCode');
+		$productBarCode = $this->input->post('productBarCode');
+		$productPrice = $this->input->post('productPrice');
+		$taxType = $this->input->post('taxType');
+		$productDescription = $this->input->post('productDescription');
+		$images = $_FILES["images"]["name"];
+   	
+		  $this->load->library('upload');
+    $number_of_files_uploaded = count($_FILES['images']['name']);
+  
+    for($i = 0; $i < $number_of_files_uploaded; $i++) :
+      $_FILES['userfile']['name']     = time().'_'.$_FILES['images']['name'][$i];
+      $_FILES['userfile']['type']     = $_FILES['images']['type'][$i];
+      $_FILES['userfile']['tmp_name'] = $_FILES['images']['tmp_name'][$i];
+      $_FILES['userfile']['error']    = $_FILES['images']['error'][$i];
+      $_FILES['userfile']['size']     = $_FILES['images']['size'][$i];
+      $config = array(
+        'allowed_types' => 'jpg|jpeg|png|gif',
+        'max_size'      => 3000,
+        'overwrite'     => FALSE,
+        'upload_path'=> './uploads/product-images/'
+      );
+      $this->upload->initialize($config);
+      if ( ! $this->upload->do_upload()) :
+        $error = array('error' => $this->upload->display_errors());
+        $this->load->view('product/product_add', $error);
+      else :
+        $final_files_data[] = $this->upload->data();       	 
+      endif;
+    endfor;
+	 
+    $this->ProductModel->addProduct($categoryName, $productName, $productCode, $productBarCode, $productPrice, $taxType, $productDescription, $images); 	
+}
+
+
+public function getProDetail()
+{
+	 $id=$_REQUEST['dt'];
+	 $this->ProductModel->getProDetail($id);
+}
+
+public function editPro() {
+$id =$this->uri->segment(3);
+$data['getPcat']=$this->CategoryModel->getProductCat();
+$data['getProById']=$this->ProductModel->getProductById($id);
+$this->load->view('product/product_edit',$data);
+
+}
+
+public function editProduct() {
+		 $id =$this->input->post('hidden_id');
+		 $isactive = $this->input->post('isactive');
+ 
+ 		$categoryName = $this->input->post('categoryName');
+		$productName = $this->input->post('productName');
+		$productCode = $this->input->post('productCode');
+		$productBarCode = $this->input->post('productBarCode');
+		$productPrice = $this->input->post('productPrice');
+		$taxType = $this->input->post('taxType');
+		$productDescription = $this->input->post('productDescription');
+		$images = $_FILES["images"]["name"];
+   	
+		  $this->load->library('upload');
+    $number_of_files_uploaded = count($_FILES['images']['name']);
+  
+    for($i = 0; $i < $number_of_files_uploaded; $i++) :
+      $_FILES['userfile']['name']     = time().'_'.$_FILES['images']['name'][$i];
+      $_FILES['userfile']['type']     = $_FILES['images']['type'][$i];
+      $_FILES['userfile']['tmp_name'] = $_FILES['images']['tmp_name'][$i];
+      $_FILES['userfile']['error']    = $_FILES['images']['error'][$i];
+      $_FILES['userfile']['size']     = $_FILES['images']['size'][$i];
+      $config = array(
+        'allowed_types' => 'jpg|jpeg|png|gif',
+        'max_size'      => 3000,
+        'overwrite'     => FALSE,
+        'upload_path'=> './uploads/product-images/'
+      );
+      $this->upload->initialize($config);
+      if ( ! $this->upload->do_upload()) :
+        $error = array('error' => $this->upload->display_errors());
+        $this->load->view('product/product_edit', $error);
+      else :
+        $final_files_data[] = $this->upload->data();       	 
+      endif;
+    endfor;
+ 
+$this->ProductModel->editProduct($id, $categoryName, $productName, $productCode, $productBarCode, $productPrice, $taxType, $productDescription, $images, $isactive);
+
+}
+
+
+public function deleteProduct()
+	{
+		$id =$this->uri->segment(3);
+		$dt=$this->ProductModel->deleteProductById($id);
+		if($dt== TRUE){
+		redirect('product/index');
+		}
+	}
+
+public function getProByCat()
+{
+	 $id=$_REQUEST['dt'];
+	 $ser=$_REQUEST['ser'];
+	 $ser=isset($ser)?$ser:'';
+	 $this->ProductModel->getProByCat($id,$ser);
+}
+
+
+public function proTax() {
+		$data['getPtax']=$this->ProductModel->getProductTax();
+		$this->load->view('product/product_tax_list',$data);
+
+	}
+public function addProTax()
+{	
+        $action=$this->input->get('updt');
+		$id =$this->uri->segment(3);
+		$id=isset($id)?$id:'';
+		$data=array();
+		if($id){
+			$data['getTaxById']=$this->ProductModel->getProductTaxById($id);
+			$this->load->view('product/product_tax_add',$data);
+		}else{
+			
+			$data['getTaxById']='';
+			$this->load->view('product/product_tax_add',$data);
+		}
+}
+
+public function addProductTax() {
+		$action = $this->input->get('updt');
+		$taxName = $this->input->post('taxName');		
+		$texPercent = $this->input->post('texPercent');
+		$taxDescription = $this->input->post('taxDescription');
+		$id = $this->input->post('hidden_id');
+		$isactive = $this->input->post('isactive');
+		if($action=='update'){
+			$result=$this->ProductModel->addProductTax($id,$taxName,$texPercent,$taxDescription,$isactive);
+			if($result == TRUE)
+			{
+				$this->session->set_flashdata('message_success', 'Product Tax Added Successfully!');
+				redirect('Product/proTax');
+			}else{
+				$this->session->set_flashdata('message_error', 'Product Tax Not Added!');
+				redirect('Product/proTax');
+			}
+		}else{
+			$result=$this->ProductModel->addProductTax('',$taxName,$texPercent,$taxDescription,$isactive);
+		if($result == TRUE)
+			{
+				$this->session->set_flashdata('message_success', 'Product Tax Added Successfully!');
+				redirect('Product/proTax');
+			}else{
+				$this->session->set_flashdata('message_error', 'Product Tax Not Added!');
+				redirect('Product/proTax');
+			}
+		}
+
+}
+public function deleteProductTax()
+	{
+		$id =$this->uri->segment(3);
+		$res=$this->ProductModel->deleteProductTaxById($id);
+		if($res == TRUE)
+		{
+			redirect('Product/proTax');
+		}
+	}
+
+}
+?>

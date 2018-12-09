@@ -1,0 +1,74 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class CategoryModel extends CI_Model {
+
+
+public function addProductCat($id='',$categoryName, $categoryDescription, $isactive)
+{
+if($categoryName !=''){
+
+$data = array(
+   'icw_cn0318' => $categoryName ,
+   'icw_cd0319' => $categoryDescription,
+   'icw_isa0320' => $isactive
+);
+if($id){
+	$this->db->where('icw_ci0317', $id);
+	$ins = $this->db->update('icw_cat_0317', $data); 
+}else{
+	$ins = $this->db->insert('icw_cat_0317', $data); 
+}
+
+return $ins;
+
+}else{
+	$this->session->set_flashdata('message_empty', 'Category Name Should Not Be Empty!');
+	redirect('Category/addProductCat');
+}
+
+}
+
+public function getProductCat()
+{
+$query = $this->db->get('icw_cat_0317');
+return $query;
+}
+public function getProductCatById($id)
+{
+	$this->db->select('*');
+	$this->db->from('icw_cat_0317');
+	$this->db->where('icw_ci0317', $id); 
+$query = $this->db->get()->row();
+return $query;
+}
+
+public function editProductCat($id, $categoryName, $categoryDescription, $isactive) {
+if($categoryName !=''){
+$data = array(
+   'icw_cn0318' => $categoryName ,
+   'icw_cd0319' => $categoryDescription,
+   'icw_isa0320' =>$isactive  
+);
+$this->db->where('icw_ci0317', $id);
+$updt=$this->db->update('icw_cat_0317', $data);
+}else{
+	//$this->session->set_flashdata('message_empty', 'Category Name Should Not Be Empty!');
+	//redirect('product/editProCat');
+}	
+	
+}
+
+public function deleteProductCatById($id)
+{	
+	$this->db->where('icw_ci0317', $id);
+	$delete=$this->db->delete('icw_cat_0317'); 
+		if($delete == TRUE)
+		{
+			return $delete;
+		}
+}
+
+
+}
+?>

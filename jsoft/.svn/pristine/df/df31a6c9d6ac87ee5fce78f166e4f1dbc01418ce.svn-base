@@ -1,0 +1,102 @@
+<?php
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Report extends CI_Controller {
+
+	public function __construct() {
+
+		parent::__construct();
+	 if(!$this->session->userdata("username"))
+	 {
+	 	redirect('welcome/index');
+	 }
+	  
+		$this->load->model('ClientModel');
+		$this->load->model('ReportModel');		
+
+	}
+
+	public function reports() {
+		$data['page_title']='Reports';
+		$data['req_page_name']='report/report';
+		$this->load->view('layout',$data);
+
+	}
+	public function customer_balance()
+	{	$data['page_title']='Customer Balance';
+		$data['getClient']=$this->ClientModel->getClient();
+		$data['req_page_name']='report/customer_balance';
+		$this->load->view('layout',$data);
+	}
+	
+	public function customer_balance_summary()
+	{
+		$client_id=$_REQUEST['clientId'];		
+		$qry=$this->ReportModel->getBalSummary($client_id);
+		if(count($qry)> 0)
+		{
+			$data['balSummary']=$this->ReportModel->getBalSummary($client_id);
+			$data['page_title']='Customer Ledger';
+			$data['req_page_name']='report/customer_balance_summary';
+			$this->load->view('layout',$data);
+		}else{
+			
+			$this->session->set_flashdata('flash_msg','No Record Found !');
+			redirect('report/customer_balance');
+		}
+		
+	}
+	public function customers_balance_report()
+	{
+		$data['page_title']='Customer Balance';
+		$data['getAllBalance']=$this->ReportModel->customers_balance_report();
+		$data['req_page_name']='report/customers_balance_report';
+		$this->load->view('layout',$data);
+	}
+	
+	public function between_days_sales()
+	{	$dt=$_REQUEST['data'];
+		if($dt =='between_date')
+			{
+				$fromDate=$_REQUEST['fromDate'];
+				$toDate=$_REQUEST['toDate'];
+			}if($dt =='today' || $dt =='week' || $dt =='month'){
+				$day=$_REQUEST['data'];				
+			}
+			$fromDate=isset($fromDate)?$fromDate:'';
+			$toDate=isset($toDate)?$toDate:'';
+			$day=isset($day)?$day:'';
+			
+			
+		$query=$this->ReportModel->between_days_sales($fromDate,$toDate,$day);
+		if(count($query)> 0)
+		{	
+			$data['page_title']='Sales Report';
+			$data['getDaysSales']=$this->ReportModel->between_days_sales($fromDate,$toDate,$day);
+			$data['req_page_name']='report/day_sales_report';
+			$this->load->view('layout',$data);
+		}else{
+			
+			$this->session->set_flashdata('flash_msg','<i class="fa fa-ban" aria-hidden="true" style="font-size:20px;"></i>&nbsp;<span class="col-md-offset-1">Not sale anythings.... !</span>');
+			redirect('report/reports');
+		}
+	}
+	
+	public function invoice_report(){
+		
+		$data['getinvoiceReport']=$this->ReportModel->get_invoice_report();
+		$data['page_title']='Invoice Report';
+		$data['req_page_name']='report/invoice_report';
+		$this->load->view('layout',$data);
+	}
+	
+	public function deleteInvoice()
+	{
+		$id =$this->input->post('id');
+		$res=$this->ReportModel->deleteInvo($id);
+		if($res == TRUE){echo 1;}else{echo 0;}
+	}
+	
+	
+}
+?>

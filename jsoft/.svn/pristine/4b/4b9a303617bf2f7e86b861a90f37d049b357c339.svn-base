@@ -1,0 +1,41 @@
+<?php
+class SendSms extends CI_Model {
+
+	function send_sms($mobile,$tmplt_id){
+	
+	    $this->db->select('*');
+		$this->db->where('icw_id0317',$tmplt_id);
+		$this->db->from('icw_templates_0317');
+		$rslt=$this->db->get()->row();
+		print_r($rslt->icw_sms_tmplt0317);//die;
+		$msg=$rslt->icw_sms_tmplt0317;			
+		
+		$mobileNumber = "9999999";
+		$senderId = "ICONRD";
+		$message = urlencode("Test message");
+		$url="http://103.247.98.91/API/SendMsg.aspx?uname=20170118&pass=12345&send=ICONRD&dest=8115605346&msg=Test+message&priority=1";
+		// init the resource
+		$ch = curl_init();
+		curl_setopt_array($ch, array(
+		CURLOPT_URL => $url,
+		CURLOPT_RETURNTRANSFER => true,
+		));
+
+		$output = curl_exec($ch);
+
+		//Print error if any
+		if(curl_errno($ch))
+		{
+			echo 'error:' . curl_error($ch);
+		}
+		curl_close($ch);
+		echo $output;
+		if($output){
+			$insData=array('icw_sms_mob0317'=>$mobile,'icw_sms_temp0317'=>$tmplt_id,'icw_sms_status0317'=>1);
+		  }else{
+		  	$insData=array('icw_sms_mob0317'=>$mobile,'icw_sms_temp0317'=>$tmplt_id,'icw_sms_status0317'=>0);
+		  }
+			$ins = $this->db->insert('icw_sms_audit_log_0317', $insData);
+		  
+	}
+}

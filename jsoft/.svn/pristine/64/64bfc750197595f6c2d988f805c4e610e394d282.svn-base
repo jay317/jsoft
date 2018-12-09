@@ -1,0 +1,20 @@
+<?php if($type=='bil'){?>
+<table class="table-responsive1">
+<tr>Date:<?php echo $today = date("F j, Y, g:i a");?></tr>
+<?php $totSum=0; foreach($bill_data as $row){?>
+<tr><td style="width:10%;"><?php echo ucwords($row->items);?></td><td style="width:2%;"><?php echo $row->qty;?></td><td style="width:2%;"><?php echo $row->price;?></td><td style="width:2%;"><?php $tot=$row->total; echo $tot; $totSum+=$tot;?></td></tr>
+<?php } ?>
+<tr><td style="width:10%;"></td><td style="width:2%;"></td><td style="width:2%;"><strong>Total:</strong></td><td style="width:2%;"><i class="fa fa-inr" aria-hidden="true"></i><strong><?php echo $totSum;?></strong></td></tr>
+</table>
+<h5><center><strong>-----* Thank You *----</strong></center></h5>
+
+<?php }else{?>
+<table class="table-responsive1">
+<?php foreach($bill_data as $row){?>
+<tr><td style="width:10%;"><?php echo ucwords($row->items);?></td><td style="width:2%;"><?php echo $row->qty;?></td></tr>
+<?php } ?>
+</table>
+<input type="hidden" value="<?php echo $row->tblno;?>" id="hidden_tblno">
+<div class="panel-footer"><button class="btn btn-success" onclick="getBill(<?php echo $row->tblno;?>)">Bill</button></div>
+
+<?php }?>

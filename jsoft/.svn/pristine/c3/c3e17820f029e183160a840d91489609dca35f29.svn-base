@@ -1,0 +1,112 @@
+<!-- header -->
+<?php include "/../includes/header_main.php";?>
+<!-- /header -->
+
+<!-- Left side column. contains the logo and sidebar -->
+<?php include "/../includes/sidebar_left.php";?>
+<!-- /Left sidebar -->
+	
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Dashboard
+        <small>Category</small>
+		<a class="btn btn-primary" href="<?php echo site_url('Category/addProCat');?>">Add Product Category</a>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Category</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h2 class="box-title badge badge-info">Product Category List</h2>
+            </div>
+            <!-- /.box-header -->
+       <div class="box-body">
+              <div class="col-md-10 panel panel-default" style="margin: 20px;">
+              <table class="table table-bordered"  id="mytbl" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th>Sr No.</th>
+                  <th>Product Category Name</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody> 
+					<?php  $i=1;
+					foreach ($getPcat->result() as $row){ ?>					
+				 <tr>
+                  <td><?php echo $i++; ?></td>
+                  <td><?php echo ucfirst($row->icw_cn0318); ?></td>
+                  <td><?php echo ucfirst($row->icw_cd0319); ?></td>
+				  <td>
+						<?php $stuts=$row->icw_isa0320; 
+							if($stuts==1)
+							{
+								echo '<span class="label label-success">Active</span>';
+							}else{
+								echo '<span class="label label-default">InActive</span>';
+							} ?>
+				  </td>
+				  <td>
+				  <a class="btn btn-info" href="<?php echo base_url();?>/Category/addProCat/<?php echo $id=$row->icw_ci0317;?>">Edit</a>
+                  <a class="btn btn-danger" onclick="return confirm(' you want to delete?');" href="<?php echo base_url();?>/Category/deleteProductCat/<?php echo $id=$row->icw_ci0317;?>">Delete</a></td>
+                </tr>
+				<?php } ?>
+			   </tbody>
+              </table>
+            </div>
+          </div>
+          </div>
+		  </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+	
+  <!-- Control Sidebar -->
+  
+  <!-- footer -->
+  <?php include "/../includes/footer.php";?>
+  <!-- /footer -->
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+	<script "text/javascript">
+	$(document).ready(function() {
+		  $("#mytbl").DataTable({
+		    "bPaginate": true,
+		    "bJQueryUI": true,
+		    "bFilter": true,
+		    "bSort": true,
+		    "bInfo": true,
+		    "bAutoWidth": false,
+		    "bScrollCollapse": true,
+		    "fnInitComplete": function() {
+		      this.css("visibility", "visible");
+		    },
+		    "bLengthChange": true,
+		  });
+		});
+	</script>
+	
+	
+</body>
+</html>
+

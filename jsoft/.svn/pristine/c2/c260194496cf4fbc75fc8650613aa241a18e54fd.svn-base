@@ -1,0 +1,162 @@
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        <?php echo $page_title;?>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Category</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <div><h2 class="box-title"> <?php// if($getPcatById!=''){ echo "Edit";}else { echo "Add";}?>Order</h2></div>			  
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            
+            <form class="form-horizontal" id="addForm" method="post" action="<?php echo site_url('optics/optOrderSave');?>">         
+              <div class="box-body">
+				<div class="form-group">
+				  <div class="col-sm-5">
+				   <label for="sl.no" class="col-sm-5 control-label">Order no.</label>
+                  <div class="col-sm-3">
+					
+                    <input type="text" value="<?php echo $order_no;?>" class="form-control" name="orderNo" readonly >
+                  </div>
+				 </div>
+				 <div class="col-sm-4">
+                  <label for="balance" class="col-sm-2 control-label">Date</label>
+                  <div class="col-sm-10">
+					<span class="form-group input-group date col-md-8" data-provide="datepicker">
+						<input type="text" id="datepicker1" name="date" class="form-control" placeholder="Date">
+						<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+						</span>						
+					</span>
+                  </div>
+				 </div>
+                </div>
+                <div class="form-group">
+                  <label for="cusName" class="col-sm-2 control-label">Name</label>
+                  <div class="col-sm-3">
+                    <input type="text" value="" class="form-control" name="cusName" id="cusName" placeholder="Customer Name" required>
+                  </div>
+                </div>
+				<div class="form-group">
+                  <label for="cusName" class="col-sm-2 control-label">Mobile</label>
+                  <div class="col-sm-3">
+                    <input type="text" value="" class="form-control" name="mobile" id="mobile" placeholder="Mobile" maxlength=10 required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="frame" class="col-sm-2 control-label">Frame</label>
+                  <div class="col-sm-3">
+                    <input type="text" value="" class="form-control" name="frame" id="frame" placeholder="Frame Name" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="lenses" class="col-sm-2 control-label">Lenses</label>
+                  <div class="col-sm-3">
+                    <input type="text" value="" class="form-control" name="lenses" id="lenses" placeholder="Lenses" required>
+                  </div>
+                </div>
+				<div class="form-group">
+                  <label for="totalAmount" class="col-sm-2 control-label">Total Amount</label>
+                  <div class="col-sm-3">
+                    <input type="text" value="" class="form-control" name="totalAmount" id="totalAmount" placeholder="Total Amount" required>
+                  </div>
+                </div>
+				<div class="form-group">
+				  <div class="col-sm-5">
+				   <label for="advnc" class="col-sm-5 control-label">Advanced</label>
+                  <div class="col-sm-4">
+                    <input type="text" value="" class="form-control" name="advnc" id="advnc" placeholder="Advanced">
+                  </div>
+				 </div>
+				 <div class="col-sm-6">
+                  <label for="balance" class="col-sm-2 control-label">Balance</label>
+                  <div class="col-sm-4">
+                    <input type="text" value="" class="form-control" name="balance" id="balance" placeholder="Balance">
+                  </div>
+				 </div>
+                </div>
+				<div class="col-md-offset-2">
+				<div class="form-group col-md-6">
+					<table class="table" style="border:none;">
+					  <th width="1%"></th><th width="1%"></th><th width="1%">Sphere</th><th width="1%">Cylinder</th><th width="1%">Axis</th>
+					  <tr>
+						<th rowspan="2" style="vertical-align: middle;">Right</th>
+							<td>DIST(+)</td>
+							<td><input type="text" name="rdSph" class="form-control"></td>
+							<td><input type="text" name="rdCyl" class="form-control"></td>
+							<td><input type="text" name="rdAxis" class="form-control"></td>
+					  </tr>
+					  <tr>
+							<td>NEAR(-)</td>
+							<td><input type="text" name="rnSph" class="form-control"></td>
+							<td><input type="text" name="rnCyl" class="form-control"></td>
+							<td><input type="text" name="rnAxis" class="form-control"></td>
+					  </tr>
+
+					   <th width="4%"></th><th width="1%"></th><th width="4%">Sphere</th><th width="4%">Cylinder</th><th width="4%">Axis</th>
+					  <tr>
+						<th rowspan="2" style="vertical-align: middle;">Left</th>
+							<td>DIST(+)</td>
+							<td><input type="text" name="ldSph" class="form-control"></td>
+							<td><input type="text" name="ldCyl" class="form-control"></td>
+							<td><input type="text" name="ldAxis" class="form-control"></td>
+					  </tr>
+					  <tr>
+							<td>NEAR(-)</td>
+							<td><input type="text" name="lnSph" class="form-control"></td>
+							<td><input type="text" name="lnCyl" class="form-control"></td>
+							<td><input type="text" name="lnAxis" class="form-control"></td>
+					  </tr>
+					</table>
+				
+				</div>
+			   </div>
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <a href="<?php echo site_url('optics/orderList?list_type=shop');?>" class="btn btn-default col-md-offset-4">Back</a>
+                <button type="submit" class="btn btn-info">Submit</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+		  </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+<!--- /scripts --->
+<script>
+$(document).ready(function () {
+ $( "#datepicker1" ).datepicker("setDate" , new Date()).on('change', function(){
+        $('.datepicker').hide();
+    });
+});
+
+$("#advnc").on('keyup',function(){
+var advncd=$(this).val();
+var totAmt=$("#totalAmount").val();
+var bal=parseFloat(totAmt)-parseFloat(advncd);
+	bal=Math.round(bal * 100)/100;
+	$("#balance").val(bal);
+});
+</script>

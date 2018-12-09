@@ -1,0 +1,129 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class TailorModel extends CI_Model {
+
+
+function OrderSave($ordData){
+$orderData= array(
+		'icw_shopId0317'=>$ordData['shopId'],
+		'icw_tai_date0317'=>$ordData['date'],
+		'icw_tai_cName0317'=>$ordData['cusName'],	
+		'icw_tai_cMobile0317'=>$ordData['mobile'],
+		'icw_tai_totalAmt0317'=>$ordData['totalAmount'],
+		'icw_tai_advance0317'=>$ordData['advnc'],
+		'icw_tai_balance0317'=>$ordData['balance'],
+		'icw_tai_orderNo_0317'=>$ordData['orderNo'],
+		'icw_tai_type_0317'=>$ordData['type'],
+		'icw_tai_qty_0317'=>$ordData['qty'],
+		'icw_tai_length_0317'=>$ordData['length'],
+		'icw_tai_fork_0317'=>$ordData['fork'],
+		'icw_tai_waist_0317'=>$ordData['waist'],
+		'icw_tai_thighs_0317'=>$ordData['thighs'],
+		'icw_tai_hip_0317'=>$ordData['hip'],
+		'icw_tai_knee_0317'=>$ordData['knee'],
+		'icw_tai_bottom_0317'=>$ordData['bottom'],
+		'icw_tai_shoulder_0317'=>$ordData['shoulder'],
+		'icw_tai_chest_0317'=>$ordData['chest'],
+		'icw_tai_stomach_0317'=>$ordData['stomach'],
+		'icw_tai_hLength_0317'=>$ordData['hLength'],
+		'icw_tai_front_0317'=>$ordData['front'],
+		'icw_tai_collor_0317'=>$ordData['collor'],
+		'icw_tai_back_0317'=>$ordData['back']		
+	 	); 
+$ins=$this->db->insert('icw_tailor_order_0317', $orderData);
+if($ins){
+return true;
+}else{
+return false;
+}
+}
+
+function orderGet($last_order_no){
+	$this->db->select('*');
+	$this->db->from('icw_tailor_order_0317');
+	$this->db->where('icw_tai_orderNo_0317',$last_order_no);
+	$qry=$this->db->get()->row();
+	return $qry;
+}
+
+function orderListGet(){
+	$this->db->select('*');
+	$this->db->from('icw_tailor_order_0317');
+	$this->db->order_by('icw_tai_orderNo_0317','desc');
+	$qry=$this->db->get()->result();
+	return $qry;
+}
+
+function orderPaid($last_order_no){
+	$data=array('icw_tai_balance0317'=>0,'icw_tai_advance0317'=>0);
+	$this->db->where('icw_tai_orderNo_0317',$last_order_no);
+	$updt=$this->db->update('icw_tailor_order_0317',$data);
+	if($updt == true){
+		return true;}else{ return false;}
+
+}
+
+function orderDispatch($last_order_no){
+$data=array('icw_tai_dispatch0317'=>1);
+	$this->db->where('icw_tai_orderNo_0317',$last_order_no);
+	$updt=$this->db->update('icw_tailor_order_0317',$data);
+	if($updt == true){
+		return true;}else{ return false;}
+}
+
+function orderDelete($del_id){
+$this->db->where('icw_tai_id0317',$del_id);
+	$delete=$this->db->delete('icw_tailor_order_0317');
+	if($delete == true){
+		return true;}else{ return false;}
+}
+
+function getTemplates($shopType){
+	    $this->db->select('*');
+		$this->db->where('icw_template_type0317',$shopType);
+		$this->db->from('icw_templates_0317');
+		$rslt=$this->db->get();
+		return $rslt->result();			
+}
+
+/*----- dashboard data display--- */
+   public function taiDashboardDataDetails(){
+		$this->db->select('sum(icw_tai_totalAmt0317) as icw_tai_totalAmt0317');
+		$this->db->from('icw_tailor_order_0317');
+		$this->db->where('icw_tai_balance0317=',0);
+		$totalAmtDt=$this->db->get()->row();
+		
+		$this->db->select('sum(icw_tai_advance0317) as icw_tai_advance0317');
+		$this->db->from('icw_tailor_order_0317');
+		$this->db->where('icw_tai_balance0317 >',0);
+		$totalAdvAmtDt=$this->db->get()->row();
+		
+		$this->db->select('sum(icw_tai_balance0317) as icw_tai_balance0317');
+		$this->db->from('icw_tailor_order_0317');
+		$this->db->where('icw_tai_advance0317 >',0);
+		$totalBalAmtDt=$this->db->get()->row();
+		
+		$this->db->select('sum(icw_tai_totalAmt0317) as icw_tai_totalAmt0317,icw_tai_date0317 as date');
+		$this->db->from('icw_tailor_order_0317');
+		$this->db->group_by('icw_tai_date0317');		
+		$this->db->where('icw_tai_date0317 BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()');
+		$queryWeekData=$this->db->get()->result();
+		
+		$this->db->select('sum(icw_tai_totalAmt0317) as icw_tai_totalAmt0317,icw_tai_date0317 as date');
+		$this->db->from('icw_tailor_order_0317');
+		$this->db->group_by('icw_tai_date0317');			
+		$this->db->where('icw_tai_date0317 BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW()');
+		$queryMonthData=$this->db->get()->result();
+		
+		$TotalRegistration=$this->db->get('icw_users_0317');
+		$TotalRegistration=$TotalRegistration->num_rows();
+		
+		$qry=array('queryWeekData'=>$queryWeekData,'queryMonthData'=>$queryMonthData,'TotalRegistration'=>$TotalRegistration,'totalAmtDt'=>$totalAmtDt,'totalAdvAmtDt'=>$totalAdvAmtDt,'totalBalAmtDt'=>$totalBalAmtDt);		
+		return $qry;
+   }
+
+
+
+}
+?>

@@ -1,0 +1,109 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+
+class Restaurant extends CI_Controller {
+
+	public function __construct() {
+		
+		parent::__construct();
+	     if(!$this->session->userdata("username"))
+            {
+                 redirect('welcome/index');
+            }
+		$this->load->model('RestaurantModel');
+		$this->load->model('ProductModel');
+		
+	}
+
+public function index(){
+	$data['getItems']=$this->RestaurantModel->getItems();
+	$data['getbillTable']=$this->RestaurantModel->getbillTable();
+	$data['page_title']='Place order';
+	$data['req_page_name']='restaurant/restaurant';
+	$this->load->view('layout2',$data);
+
+}
+
+public function addItems(){
+	$pid=$this->input->get('pid');
+	$res=$this->RestaurantModel->addItems($pid);
+	$previousItems = $this->session->userdata("add_items")?$this->session->userdata("add_items"):array();
+	if(isset($previousItems[$pid])){
+				$itemRow = $previousItems[$pid];
+				$itemRow['item_qty'] = $itemRow['item_qty']+1;
+				$itemRow['item_total']=$itemRow['item_qty'] * $itemRow['item_price'];
+			}else{
+	$res=$this->RestaurantModel->addItems($pid);
+	$itemRow = array(
+	 'item_id'=>$res->pid,
+	 'item_name'=>$res->name,
+	 'item_qty'=>1,
+	 'item_price'=>$res->price,
+	 'item_img'=>$res->img,
+	 'item_total'=>$res->price
+	);
+}
+	
+	$previousItems[$pid]=$itemRow;
+	$this->session->set_userdata('add_items', $previousItems);
+	
+	//print_r($previousItems);die;
+	$data['previousItems']=$this->session->userdata("add_items");
+	$this->load->view('restaurant/left_side_block',$data);
+		
+}
+/*function calcPos(){
+		$previousItems = $this->session->userdata("add_items")?$this->session->userdata("add_items"):array();
+		$rowId = $this->input->get('id');
+		$currentItems=$previousItems[$rowId];
+		$itemRow = array(
+				 'item_id'=>$currentItems['item_id'],
+				 'item_name'=>$currentItems['item_name'],
+				 'item_qty'=>$currentItems['item_qty'],
+				 'item_price'=>$currentItems['item_price'],
+				 'item_img'=>$currentItems['item_img'],
+				 'item_total'=>$currentItems['item_price']*$currentItems['item_qty'],
+				);
+		$previousItems[$pid]=$itemRow;
+		$this->session->set_userdata('add_items', $previousItems);
+}*/
+
+function removeItems(){
+	$rowId = $this->input->get('pid');
+	$previousItems = $this->session->userdata("add_items")?$this->session->userdata("add_items"):array();
+		unset($previousItems[$rowId]);			
+	$this->session->set_userdata("add_items",$previousItems);
+	$data['previousItems']=$this->session->userdata("add_items");
+	$this->load->view('restaurant/left_side_block',$data);
+}
+
+function orderSave(){
+	 $tblNo=$this->input->get('tblno');
+	 $servNo=$this->input->get('servno');
+	 $ordType=$this->input->get('ordtype');
+	$result=$this->RestaurantModel->orderSave($tblNo,$servNo,$ordType);
+	if($result==true){echo 1;}else{echo 0;}
+	
+}
+
+function getBill(){
+	$tblNo=$this->input->get('tblno');
+	$type=$this->input->get('type');
+	$result=$this->RestaurantModel->getBill($tblNo);
+	if($result){
+		$data['bill_data']=$this->RestaurantModel->getBill($tblNo);
+		$data['type']='bil';
+		$this->load->view('restaurant/bill_block',$data);		
+	}else{return false;}
+}
+
+function orderList(){
+	$data['ord_list']=$this->RestaurantModel->getOrder();
+	$data['page_title']='order List';
+	$data['req_page_name']='restaurant/order_list';
+	$this->load->view('layout2',$data);
+}
+
+}
+?>

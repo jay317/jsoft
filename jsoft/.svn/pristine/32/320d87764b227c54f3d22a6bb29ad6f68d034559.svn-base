@@ -1,0 +1,54 @@
+
+
+.select-div{
+	margin-top:20px;
+}
+.j-body{
+	margin-top:50px;
+}
+.spn{
+font-size: 158px; 
+color: green; 
+display: none;
+position:relative;
+top:150px;
+left:120px;
+
+ transition: all 0.5s ease;
+}
+
+.spin {
+    transform: rotate(180deg);
+    transform-origin: 50% 50%;
+}
+.box-j1{
+	height:500px;	
+}
+
+.box-j2{
+	height:500px;	
+}
+.jCalc{
+	margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+	height:300px;
+	overflow:auto;
+}
+.sCalc{
+	 height: 100px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.moreDiv{
+	padding-bottom:10px;
+}
+.moreTableDiv{
+	text-align:center;
+}
+
+
+
+
+

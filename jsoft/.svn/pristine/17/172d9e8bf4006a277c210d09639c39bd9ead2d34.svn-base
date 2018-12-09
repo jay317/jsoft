@@ -1,0 +1,68 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class MainController extends CI_Controller {
+
+	public function __construct() {
+		
+		parent::__construct();
+	
+		//$this->load->model('MainModel');
+		
+	}
+
+
+public function login() {
+		
+		 $username=$this->input->post('email');
+		 $password=$this->input->post('password');
+			 $this->load->model('MainModel');
+			if ($this->MainModel->check_user_login($username, $password)) {
+
+				 $user    = $this->MainModel->check_user_login($username, $password);
+
+				// set session user datas
+				$_SESSION['user_id']      = (int)$user->id;
+				$_SESSION['username']     = (string)$user->username;
+				$_SESSION['logged_in']    = (bool)true;
+				
+				
+				//$this->load->view('welcome');	
+					redirect('mainController/dashboard');
+				
+			} else {
+								
+				$this->session->set_flashdata('message_name', 'Invalid username or password');	
+				redirect('welcome/index');
+
+				
+			}
+			
+		}
+		
+		
+	public function dashboard(){
+		$this->load->view('welcome');
+	}	
+
+	public function logout() {
+				
+		if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+			
+			// remove session datas
+			foreach ($_SESSION as $key => $value) {
+				unset($_SESSION[$key]);
+			}
+			
+			
+			//$this->load->view('user/logout/logout_success', $data);
+			redirect('welcome/index');
+			
+		} else {			
+			redirect('/');
+			
+		}
+		
+	}
+	
+}

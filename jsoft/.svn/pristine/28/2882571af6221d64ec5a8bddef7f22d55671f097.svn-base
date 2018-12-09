@@ -1,0 +1,150 @@
+<!-- header -->
+<?php include "/../includes/header_main.php";?>
+<!-- /header -->
+
+<!-- Left side column. contains the logo and sidebar -->
+<?php include "/../includes/sidebar_left.php";?>
+<!-- /Left sidebar -->
+	
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Dashboard
+        <small>Tax</small>
+		<a class="btn btn-primary" href="<?php echo site_url('Product/addProTax');?>">Add Product Tax</a>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Tax</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h2 class="box-title">Product Taxes 
+			  </h2>
+            </div>
+            <!-- /.box-header -->
+       <div class="box-body table-responsive no-padding">
+              <div style="margin: 20px;">
+              <table class="table table-bordered"  id="mytbl" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th>Sr No.</th>
+                  <th>Tax Name</th>
+                  <th>Sub Type</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody> 
+					<?php  $i=1;
+					foreach ($getPtax->result() as $row){ ?>					
+				 <tr>
+                  <td><?php echo $i++; ?></td>
+                  <td><?php echo ucfirst($row->icw_taxName0317); ?></td>
+                  <td>
+                  <span id="btnView<?php echo $id=$row->icw_id0317;?>"><button class="btn btn-warning" type="button" onclick="getSubTax(<?php echo $id=$row->icw_id0317;?>)">view</button></span>
+                  <span class="" id="btnData<?php echo $id=$row->icw_id0317;?>" style="display:none;"><h6><i class="fa fa-window-close" aria-hidden="true" style="cursor:pointer;" onclick="closeTab(<?php echo $id=$row->icw_id0317;?>)"></i></h6></span>
+                  </td>
+				  <td><?php echo ucfirst($row->icw_taxNote0317); ?></td>
+				  <td>
+						<?php $stuts=$row->icw_taxStatus0317; 
+							if($stuts==1)
+							{
+								echo '<span class="label label-success">Active</span>';
+							}else{
+								echo '<span class="label label-default">InActive</span>';
+							} ?>
+				  </td>
+				  <td>
+				  <a class="btn btn-info" href="<?php echo base_url();?>/product/addProTax/<?php echo $id=$row->icw_id0317;?>">Edit</a>
+                  <a class="btn btn-danger" onclick="return confirm(' you want to delete?');" href="<?php echo base_url();?>/product/deleteProductTax/<?php echo $id=$row->icw_id0317;?>">Delete</a></td>
+                </tr>
+				<?php } ?>
+			   </tbody>
+              </table>
+            </div>
+          </div>
+          </div>
+		  </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+	
+  <!-- Control Sidebar -->
+  
+  <!-- footer -->
+  <?php include "/../includes/footer.php";?>
+  <!-- /footer -->
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+	<script "text/javascript">
+	$(document).ready(function() {
+		  $("#mytbl").DataTable({
+		    "bPaginate": true,
+		    "bJQueryUI": true,
+		    "bFilter": true,
+		    "bSort": true,
+		    "bInfo": true,
+		    "bAutoWidth": false,
+		    "bScrollCollapse": true,
+		    "fnInitComplete": function() {
+		      this.css("visibility", "visible");
+		    },
+		    "bLengthChange": true,
+		  });
+		});
+	</script>
+	
+<script>
+function getSubTax(j){
+	$.ajax({
+	    type: "post",
+	    data: {dt:j} ,
+	    url: "<?php echo site_url('product/getSubTaxById');?>",
+	    success: function (response) {
+		//alert(response);
+		$("#btnData"+j).append(response);
+		$("#btnData"+j).show();
+		$("#btnView"+j).hide();
+	    },
+	    error: function(jqXHR, textStatus, errorThrown) {
+	       console.log(textStatus, errorThrown);
+	    }
+	});
+}
+
+function closeTab(e){
+	$("#btnData"+e).hide();
+	$("#btnView"+e).show();
+	$("#btnData"+e).hide();
+	$('#mytbl').load(document.URL +  ' #mytbl');
+}
+
+</script>
+
+
+
+
+
+
+	
+</body>
+</html>
+

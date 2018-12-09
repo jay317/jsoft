@@ -1,0 +1,31 @@
+<?php
+//if ( ! defined('BASEPATH')) exit('No direct script access allowed');  
+
+class AndroidController extends CI_Controller {
+
+
+public function do_login(){ //login
+		$username = $this->security->xss_clean($this->input->post('uname'));
+		$password = $this->security->xss_clean($this->input->post('passwd'));
+		// print_r($_REQUEST);
+		// echo $username;
+		// echo $password;
+		$responseJson=array();
+		$this->load->model('android_model/AndroidLogin_model');
+		$result = $this->AndroidLogin_model->validate($username,$password);
+		
+			if($result=='200'){ 
+				$responseJson [] = array('status'=>'success','auth_hash'=>session_id(),'is_track_enable'=>'yes',
+			'uid'=>$this->session->userdata('shl_ss_230218u'));
+				echo json_encode($responseJson);
+			}elseif($result=='201'){ 
+				$responseJson [] = array('status'=>'error','error_code'=>201,'error_message'=>'Account Inactive');
+				echo json_encode($responseJson);
+			}else if($result=='202'){ 
+				$responseJson [] = array('status'=>'error','error_code'=>202,'error_message'=>'Invalid username or Password');
+				echo json_encode($responseJson);
+			}
+
+	}
+	
+}

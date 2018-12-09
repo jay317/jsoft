@@ -1,0 +1,158 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class SaleModel extends CI_Model {
+
+public function getProInfo($id){
+	
+            $this->db->select('*');
+            $this->db->from('icw_pro_0317');
+            $this->db->where('icw_pi0317',$id);
+			$query = $this->db->get()->row();
+           
+            $query2 = $this->db->get('icw_tax_0317')->result();
+
+			if($query && $query2){
+				$rtdata= array('query'=>$query,'query2'=>$query2);
+				return $rtdata;
+			}
+	
+}
+
+public function getSubTaxInfo($id){
+	
+            $this->db->select('icw_subTaxName0317,icw_subTaxPercent0317');
+            $this->db->from('icw_taxmap_0317');
+            $this->db->where('icw_taxId0317',$id);
+			$query = $this->db->get()->result();
+			return $query;
+			
+}
+public function getInvoiceNo(){
+			$query = $this->db->get('icw_invoice_0317')->result();
+			return $query;
+}
+
+public function invoiceSave($invoiceData,$invo_date){
+	
+	$ins1=$this->db->insert('icw_invoice_0317', $invoiceData);
+	
+	$invoiceProDataCount= count($_REQUEST['productName']);
+	$invoiceTaxDataCount= count($_REQUEST['taxDtl']);
+	
+	//print_r($_REQUEST);
+	for($i=0;$i<$invoiceProDataCount;$i++){
+		$invoiceProData= array(
+		'icw_client_Id0317'=>trim($_REQUEST['client_id']),
+		'icw_invoiceNo_0317'=>trim($_REQUEST['invoiceNo']),
+		'icw_invoice_productId_0317'=>trim($_REQUEST['productId'][$i]),
+		'icw_invoice_proname0317'=>trim($_REQUEST['productName'][$i]),
+		'icw_invoice_qty0317'=>trim($_REQUEST['qty'][$i]),
+		'icw_invoice_sellingPrice0317'=>trim($_REQUEST['selling_price'][$i]),
+		'icw_invoice_itemTotal0317'=>trim($_REQUEST['itemTotal'][$i]),
+		'icw_invoice_proDate0317'=>trim($invo_date)				
+		);
+	
+		$ins2=$this->db->insert('icw_invoice_prodetails_0317', $invoiceProData);
+	}
+	
+	for($i=0;$i<$invoiceTaxDataCount;$i++){
+	$invoiceTaxData= array(
+		'icw_client_Id0317'=>trim($_REQUEST['client_id']),
+		'icw_invoiceNo_0317'=>trim($_REQUEST['invoiceNo']),
+		'icw_client_taxDetail0317'=>trim($_REQUEST['taxDtl'][$i]),
+		'icw_client_taxSum0317'=>trim($_REQUEST['taxSum'][$i]),
+		'icw_client_InvoDate0317'=>trim($invo_date)			
+		);
+	
+	   $ins3=$this->db->insert('icw_invoice_taxdetails_0317', $invoiceTaxData);
+	}
+		if($ins1 && $ins2 && $ins3){
+	          return true;
+		}else{
+			 return false;
+		}
+}
+
+public function genInvoice($clientId,$invoiceNo,$invo_date)
+	{	
+		if($invoiceNo !=''){
+		    $this->db->select('*');
+            $this->db->from('icw_invoice_0317');
+            $this->db->where('icw_invoiceNo_0317',$invoiceNo);          
+			$query1 = $this->db->get()->row();
+			 if($query1){			
+					$clientId=$query1->icw_clientId0317;
+			 }
+
+			$this->db->select('*');
+            $this->db->from('icw_invoice_prodetails_0317');
+            $this->db->where('icw_invoiceNo_0317',$invoiceNo);          
+			$query2 = $this->db->get()->result();			
+			
+			$this->db->select('*');
+            $this->db->from('icw_invoice_taxdetails_0317');
+            $this->db->where('icw_invoiceNo_0317',$invoiceNo);          
+			$query3 = $this->db->get()->result();
+			             
+            $this->db->select('a.*,b.country_name');
+			$this->db->from('icw_clients_0317 a');
+			$this->db->join('icw_countries b','a.icw_clientCountry0317=b.id');
+			$this->db->where('a.icw_clientId0317',$clientId);         
+			$query4 = $this->db->get()->row();
+			
+				if(count($query1)>0 && count($query2)>0 && count($query3)>0 && count($query3)>4)
+				{
+					$resultData= array('query1'=>$query1,'query2'=>$query2,'query3'=>$query3,'query4'=>$query4);
+					return $resultData;
+				}
+				else{
+					return false;
+				}	
+		}
+	  elseif($clientId !='' AND $invo_date !=''){
+		    $this->db->select('*');
+            $this->db->from('icw_invoice_0317');
+            $this->db->where('icw_clientId0317',$clientId);          
+            $this->db->where('icw_invoDate0317',$invo_date);
+			$query1 = $this->db->get()->row();
+			
+			$this->db->select('*');
+            $this->db->from('icw_invoice_prodetails_0317');
+            $this->db->where('icw_client_Id0317',$clientId);          
+            $this->db->where('icw_invoice_proDate0317',$invo_date);
+			$query2 = $this->db->get()->result();
+			
+			$this->db->select('*');
+            $this->db->from('icw_invoice_taxdetails_0317');
+            $this->db->where('icw_client_Id0317',$clientId);          
+            $this->db->where('icw_client_InvoDate0317',$invo_date);
+			$query3 = $this->db->get()->result();
+			
+			$this->db->select('a.*,b.country_name');
+			$this->db->from('icw_clients_0317 a');
+			$this->db->join('icw_countries b','a.icw_clientCountry0317=b.id');
+			$this->db->where('a.icw_clientId0317',$clientId);         
+			$query4 = $this->db->get()->row();
+			
+		  	 if(count($query1)>0 && count($query2)>0 && count($query3)>0 && count($query3)>4)
+				{
+					$resultData= array('query1'=>$query1,'query2'=>$query2,'query3'=>$query3,'query4'=>$query4);
+					return $resultData;
+				}
+	              else{
+					return false;
+				}
+		}
+	else{
+		  return false;
+		}
+		
+	}
+
+
+
+
+
+}
+?>

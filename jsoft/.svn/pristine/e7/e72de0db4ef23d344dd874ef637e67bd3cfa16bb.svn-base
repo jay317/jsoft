@@ -1,0 +1,361 @@
+<!-- header -->
+<?php include "/../includes/header_main.php";?>
+<!-- /header -->
+
+<!-- Left side column. contains the logo and sidebar -->
+<?php include "/../includes/sidebar_left.php";?>
+<!-- /Left sidebar -->
+	
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Dashboard
+        <small>Sale</small>
+		<a class="btn btn-primary" href="<?php echo site_url('Category/addProCat');?>">Add Product Category</a>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>Sale</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="box box-info">
+          	 
+            <div class="box-j1 with-border col-md-4 panel panel-info">            
+			   <div class="form-group select-div">
+                  <div class="col-sm-6">
+                    <select  name="categoryName" id="jSelect" style="width:100%;">
+					<option></option>
+				<?php	foreach ($getPcat->result() as $row){ ?>
+					<option onclick="getProData(<?php echo $row->icw_ci0317; ?>)" value="<?php echo $row->icw_ci0317; ?>"><?php echo $row->icw_cn0318; ?> </option>
+				<?php } ?>
+					</select>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                  <input type="text" class="form-control" id="jSearch" placeholder="Barcode or Product-code">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-sm-12 j_body"></div>
+				  <div class="col-sm-12 divSpn">
+					<span class="icon-spinner"><img src="<?php echo base_url();?>assets/images/spinner.gif"  class="fa fa-spinner fa-spin spn"></span>
+				  </div>
+               </div> 
+             </div>
+            
+            <!-- /.box-header -->
+       <div class="box-j2 col-md-8 panel panel-default" id="printarea">      			
+              <div class=" jCalc">
+              <table border=1 class="table table-bordered jTable"  id="mytbl2" cellspacing="0" width="100%">
+	            <thead class="bg-info">
+	            	<th><i class="fa fa-trash-o" aria-hidden="true"></i></th>
+	                <th>Product</th>
+	                <th>QTY</th>
+	                <th>Price</th>
+	                <th>Total</th>
+	                <th>Tax</th>
+	                <th>Tax Name</th>
+	                <th>Tax Type</th>
+	                	                	          
+	        	</thead>	        	
+               <tbody id="jMore">
+               <tr class="item-row"></tr> 
+			   </tbody>		   
+              </table>
+            </div>
+            <div class="sCalc">
+            	<div class="col-md-12">
+            		<div class="taxDisplay-box">
+		            	<table id="taxTable">
+		            		<tbody class="taxBody">				            	
+				            </tbody>
+		            	</table>
+            		</div>
+            	</div>
+            	<div class="sCalc-box1">
+	            <div class="col-md-6"><strong>Total Tax:&nbsp;</strong><span id="totalTaxAmt">0</span></div>
+	            <div class="col-md-2"><strong>Items:&nbsp;</strong><span class="numberofitems">0</span></div>
+	            <div class="col-md-4"><strong style="font-size:32px;">&#8377;</strong><span id="grand_total" style="font-size:24px; color:green; font-weight:bold;">00.00</span></div>
+            	</div>
+            	<div class="sCalc-box2">
+            	<div class="col-md-6 payment-box">
+            	<select name="paymentMode" class="form-control">
+            		<option>Select Payment Mode</option>
+            		<option value="cash">Cash</option>
+            		<option value="credit">Credit Card</option>
+            		<option value="debit">Debit Card</option>
+            	</select>
+            	</div>
+            	<div class="col-md-6">
+            		<div class="action-box">
+		            	<button type="button" class="btn btn-info">Save</button>
+		            	<button type="button" onclick="PrintBill('.jCalc,.sCalc-box1')" class="btn btn-primary print">Print</button>
+            		</div>
+            	</div>
+            	</div>
+            </div> 
+          </div>
+          </div>
+		  </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+	 
+  <!-- Control Sidebar -->
+  
+  <!-- footer -->
+  <?php include "/../includes/footer.php";?>
+  <!-- /footer -->
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./scripts -->
+
+
+<script>
+$(document).ready(function() {
+    $('#jSelect').select2({
+    	allowClear: true,
+    	placeholder:"Select Category",
+        width: "resolve"
+    });
+});
+</script>	
+ <script>
+$("#jSelect").on('change',function (){
+	var e=$("#jSelect option:selected").val();
+	$(".j_body").html('');
+	
+	var delay = 1000;
+	
+		$(".spn").show();
+		$(".spn").addClass('spin');
+	    $(".divSpn").show();
+	    
+    	
+$.ajax({
+    type: "post",
+    data: {dt:e,ser:''} ,
+    url: "<?php echo site_url('product/getProByCat');?>",
+    success: function (response) {
+    	setTimeout(function() 
+    		    {  
+    	$(".spn").hide(); 
+    	$(".divSpn").hide();
+    	$(".j_body").show();
+       $(".j_body").html(response);
+    		    },
+    		    delay
+    		) ;
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+       console.log(textStatus, errorThrown);
+    }
+});
+
+});
+</script>
+
+<script>
+$("#jSearch").on('keyup',function (){
+	var e=$("#jSearch").val();
+	$(".j_body").html('');
+	
+	var delay = 1000;
+	
+		$(".spn").show();
+		$(".spn").addClass('spin');
+	    $(".divSpn").show();
+	    
+    	
+$.ajax({
+    type: "post",
+    data: {dt:e, ser:'barcode'} ,
+    url: "<?php echo site_url('product/getProByCat');?>",
+    success: function (response) {
+    	setTimeout(function() 
+    		    {  
+    	$(".spn").hide(); 
+    	$(".divSpn").hide();
+    	$(".j_body").show();
+       $(".j_body").html(response);
+    		    },
+    		    delay
+    		) ;
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+       console.log(textStatus, errorThrown);
+    }
+});
+
+});
+</script>
+<script>
+function getDtinfo(e)
+{
+//alert(e);
+$.ajax({
+    type: "post",
+    data: {dt:e},
+    url: "<?php echo site_url('sale/getProInfo');?>",
+    success: function (response) { //alert(response);
+    	
+    	$("#jMore").append(response);
+    	
+	  	update_total();
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+       console.log(textStatus, errorThrown);
+    }
+});
+
+}
+
+$('#mytbl2').on('change', '.optsel', function() { 
+    var optId=$(this).val();
+    var array_index = $(this).index('.optsel');
+   // alert(optId);
+	var array_index = $(this).index('.selling_price');
+	var itemtotal=$(".itemtotal").get(array_index).value;
+
+$.ajax({
+    type: "post",
+    data: {dt:optId,dt2:itemtotal},
+    url: "<?php echo site_url('sale/getSubTaxInfo');?>",
+    success: function (response) {
+        // alert(response);
+			//var $(".optsel ").get(array_index).value;
+    
+        
+    	$(".taxBody").append(response)
+	update_tax();	
+    update_total();
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+       console.log(textStatus, errorThrown);
+    }
+});
+
+});
+
+function update_tax(){
+	var grand_tax = 0;
+	i = 1;	
+	$('.totalTaxAmount').each(function(i) {
+        var TxtTotal = $(this).val();
+		
+        TxtTotal = parseFloat(TxtTotal);
+		
+        grand_tax = parseFloat(TxtTotal+grand_tax);
+    });
+	$('#totalTaxAmt').html(grand_tax.toFixed(2));
+}
+
+function update_total() { 
+	var grand_total = 0;
+	
+	i = 1;	
+	$('.itemtotal').each(function(i) {
+        var total = $(this).val();
+		
+		total = parseFloat(total);
+		
+		grand_total = parseFloat(total+grand_total);
+    });
+	$('#grand_total').html(grand_total.toFixed(2));
+	
+	//Updating total Field.
+	var items_total = 0;
+	var taxes_total = 0;
+	i = 1;
+	$('.selling_price').each(function(i) {
+        var item_total = $(this).val();
+		var array_index = $(this).index('.selling_price');
+		
+		var quantity = $(".qty").get(array_index).value;
+		var tax = $(".tax_rate").get(array_index).value;
+		
+		item_total = parseFloat(item_total)*parseFloat(quantity);
+		items_total = parseFloat(items_total+item_total);
+    	
+		tax_total = parseFloat(tax)*parseFloat(quantity);
+		taxes_total = parseFloat(taxes_total+tax_total);
+	});
+	$('.totalamount').html(items_total.toFixed(2));
+	$('.taxamount').html(taxes_total.toFixed(2));
+	$('.numberofitems').html($(".selling_price").length);
+	
+}
+
+$('#mytbl2').on('keyup', '.qty', function() { 
+	var array_index = $(this).index('.qty');
+	var product_price = $(".selling_price").get(array_index).value;
+	var product_quantity = $(".qty").get(array_index).value; 
+	if(isNaN(product_quantity)) { 
+		alert("Quantity needs to be a number!");
+		$(".qty").get(array_index).value = 1;
+		$(".qty").get(array_index).focus();
+		return false;
+	}
+	
+	//var product_tax = $(".tax_rate").get(array_index).value;
+	
+	var total = parseFloat(product_price)*parseFloat(product_quantity);
+    //var tax = parseFloat(product_tax)*parseFloat(product_quantity);
+    //var grand_total = total+tax;
+    var grand_total = total;
+    
+	$(".itemtotal").get(array_index).value = grand_total;
+	
+	update_total();
+});
+
+
+$(document).ready(function(e) {  
+	$('#mytbl2').on('click', '.removeRow', function() {
+		   $(this).parents('.jRemove').remove();
+		    update_total(); 
+		});
+    });
+
+
+
+function PrintBill(elem)
+{
+    Popup($(elem).html());
+}
+
+function Popup(data)
+{
+    var mywindow = window.open('', 'new div', 'height=400,width=600');
+    mywindow.document.write('<html><head><title>Icon Billing</title>');
+    /*optional stylesheet*/ //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+    mywindow.document.write('</head><body >');
+    mywindow.document.write(data);
+    mywindow.document.write('</body></html>');
+
+    mywindow.print();
+    mywindow.close();
+
+    return true;
+}
+
+</script>
+
+
+	
+</body>
+</html>
+

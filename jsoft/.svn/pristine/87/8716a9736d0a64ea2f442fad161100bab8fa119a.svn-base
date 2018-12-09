@@ -1,0 +1,35 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class SaleModel extends CI_Model {
+
+public function getProInfo($id){
+	
+            $this->db->select('*');
+            $this->db->from('icw_pro_0317');
+            $this->db->where('icw_pi0317',$id);
+			$query = $this->db->get()->row();
+			if($query)
+            { 
+            ?>
+             <tr class="jRemove">
+				<td><i class="fa fa-times removeRow" aria-hidden="true" style="cursor: pointer"></i></td>
+                <td><?php echo $query->icw_pn0317;?></td>
+                <td><input value="1" style='width:40px'></td>
+                <td><?php echo $query->icw_prs0317;?></td>
+                <td>200</td>             
+             </tr>
+                
+            <?php }
+            else
+            {
+                return false;
+            }
+	
+	
+	
+}
+
+
+}
+?>

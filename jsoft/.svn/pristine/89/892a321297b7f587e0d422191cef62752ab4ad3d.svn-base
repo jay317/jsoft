@@ -1,0 +1,173 @@
+<?php
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+
+class Pos extends CI_Controller {
+
+	public function __construct() {
+
+		parent::__construct();
+		if(!$this->session->userdata("username"))
+		{
+			redirect('welcome/index');
+		}
+			
+		$this->load->model('ProductModel');
+		$this->load->model('CategoryModel');
+		$this->load->model('SaleModel');
+		$this->load->model('ClientModel');
+
+	}
+
+	public function index() {
+		$data['getPcat']=$this->CategoryModel->getProductCat();
+		$data['getProduct']=$this->ProductModel->getProductsDetail();
+		$data['getClient']=$this->ClientModel->getClient();
+		$data['getCountry']=$this->ClientModel->getCountry();
+		$data['getInvoiceNo']=$this->SaleModel->getInvoiceNo();
+		$userId=$this->session->userdata('user_id');
+		$this->load->model('MainModel');
+		$data['page_title']='Point Of Sale';
+		$data['settingDetails']=$this->MainModel->settingDetail($userId);
+		$previousProducts = $this->session->userdata("prev_prdcts")?$this->session->userdata("prev_prdcts"):array();
+		//$previousProducts =  array();
+		$data['previousProducts']=$previousProducts;
+		//$this->load->view('product/sales',$data);
+
+	 $data['finalcalc']=$this->finalCalcUtil($previousProducts);
+	 $data['taxlist']=$this->SaleModel->getProTaxList();
+		$this->load->view('pos/pointofsale',$data);
+	}
+
+	function addProdct($productId=''){
+		$productId = $productId==''?$this->input->get('id'):$productId;
+		$previousProducts = $this->session->userdata("prev_prdcts")?$this->session->userdata("prev_prdcts"):array();
+		//$previousProducts =  array();
+	 $getdata=$this->SaleModel->getProInfo($productId);
+	 $randomNum = rand(200000, 20000090);
+	 // $this->session->set_userdata('prev_prdcts', array());
+	 // print_r($getdata);
+	 $prdInfo = $getdata['query'];
+	 $data['taxlist']=$this->SaleModel->getProTaxList();
+	 $prdRow = array(
+	 'prd_id'=>$prdInfo->icw_pi0317,
+	 'prd_name'=>$prdInfo->icw_pn0317,
+	 'prd_code'=>$prdInfo->icw_pcod0317,
+	 'prd_barcode'=>$prdInfo->icw_pbcod0317,
+	 'prd_price'=>$prdInfo->icw_prs0317,
+	 'prd_desc'=>'',
+	 'qty'=>1,
+	 'tax_id'=>0,
+	 'total'=>$prdInfo->icw_prs0317);
+	 $previousProducts[$randomNum]=$prdRow;
+	 $data['getInvoiceNo']=$this->SaleModel->getInvoiceNo();
+		$userId=$this->session->userdata('user_id');
+		$this->load->model('MainModel');
+		$data['page_title']='Point Of Sale';
+		$data['settingDetails']=$this->MainModel->settingDetail($userId);
+
+		$data['finalcalc']=$this->finalCalcUtil($previousProducts);
+
+	 $this->session->set_userdata('prev_prdcts', $previousProducts);
+	 $data['previousProducts']=$previousProducts;
+	 $this->load->view('pos/right_side_block',$data);
+	}
+
+
+	function calcPos(){
+
+		$rowId = $this->input->get('id');
+		$productName = $this->input->get('productName');
+		$productId = $this->input->get('productId');
+		$productDesc = $this->input->get('productDesc');
+		$qty = $this->input->get('qty');
+		$selling_price = $this->input->get('selling_price');
+		$taxId = $this->input->get('tax_id');
+
+		$previousProducts = $this->session->userdata("prev_prdcts")?$this->session->userdata("prev_prdcts"):array();
+		$currentProductObj = $previousProducts[$rowId];
+
+		$prdRow = array(
+	 'prd_id'=>$currentProductObj['prd_id'],
+	 'prd_name'=>$productName,
+	 'prd_code'=>$currentProductObj['prd_code'],
+	 'prd_barcode'=>$currentProductObj['prd_barcode'],
+	 'prd_price'=>$selling_price,
+	 'prd_desc'=>trim($productDesc),
+	 'qty'=>$qty,
+	 'tax_id'=>$taxId,
+	 'total'=>($qty*$selling_price));
+
+		$previousProducts[$rowId]=$prdRow;
+		$this->session->set_userdata('prev_prdcts', $previousProducts);
+
+			
+
+	 $data['finalcalc']=$this->finalCalcUtil($previousProducts);
+
+	 $data['getInvoiceNo']=$this->SaleModel->getInvoiceNo();
+		$userId=$this->session->userdata('user_id');
+		$this->load->model('MainModel');
+		$data['page_title']='Point Of Sale';
+		$data['settingDetails']=$this->MainModel->settingDetail($userId);
+		$productId = $productId==''?$this->input->get('id'):$productId;
+		$data['taxlist']=$this->SaleModel->getProTaxList();
+
+	 $data['previousProducts']=$previousProducts;
+	 $this->load->view('pos/right_side_block',$data);
+	}
+
+	function updateRow($rowId = ''){
+		$previousProducts = $this->session->userdata("prev_prdcts")?$this->session->userdata("prev_prdcts"):array();
+		unset($previousProducts[$rowId]);
+	 $this->session->set_userdata('prev_prdcts', $previousProducts);
+	 
+	 $data['finalcalc']=$this->finalCalcUtil($previousProducts);
+
+	 $data['getInvoiceNo']=$this->SaleModel->getInvoiceNo();
+		$userId=$this->session->userdata('user_id');
+		$this->load->model('MainModel');
+		$data['page_title']='Point Of Sale';
+		$data['settingDetails']=$this->MainModel->settingDetail($userId);
+		$data['taxlist']=$this->SaleModel->getProTaxList();
+
+	 $data['previousProducts']=$previousProducts;
+	 $this->load->view('pos/right_side_block',$data);
+	}
+
+	function finalCalcUtil($previousProducts){
+		$totalTax = 0;
+		$totalPrice = 0;
+		$totalGrandTotal =0;
+		$taxBreak = array();
+		foreach ($previousProducts as $prdRowObj){
+			$taxMapObj = $this->SaleModel->getSubTaxInfo($prdRowObj['tax_id']);
+
+			$totalRowTax = 0;
+			$taxablePrice = ($prdRowObj['prd_price'] * $prdRowObj['qty']);
+			$subTaxArray = isset($taxBreak[$prdRowObj['tax_id']])?$taxBreak[$prdRowObj['tax_id']]:array();
+			foreach ($taxMapObj as $taxrow){
+				$rowTax = 0;
+				$taxItem = (($taxablePrice * $taxrow->icw_subTaxPercent0317) / 100);
+				$totalRowTax = $totalRowTax + $taxItem;
+				$subTaxArray[$prdRowObj['tax_id']] = array('name'=>$taxrow->icw_subTaxName0317,
+				'percentage'=>$taxrow->icw_subTaxPercent0317,
+				'total_tax'=>$taxItem);
+			}
+			//echo $totalTax."<br/>";
+			//$totalTax = $totalTax+$rowTax;
+			$totalPrice=$totalPrice+$taxablePrice;
+			$totalTax=$totalTax+$totalRowTax;
+			$totalGrandTotal=$totalGrandTotal+($taxablePrice+$totalRowTax);
+		}
+		$finalCalcObj = array(
+		'total_tax'=>$totalTax,
+		'total_price'=>$totalPrice,
+		'total_grand'=>$totalGrandTotal,
+		'total_break'=>$taxBreak
+		);
+
+
+	 return $finalCalcObj;
+	}
+}

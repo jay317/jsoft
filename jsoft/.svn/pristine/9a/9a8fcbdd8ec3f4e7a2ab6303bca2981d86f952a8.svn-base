@@ -1,0 +1,255 @@
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+}
+
+table {
+	table-layout: fixed;
+}
+
+table td {
+	width: 100%;
+	font-family: arial;
+}
+
+td {
+	vertical-align: middle !important;
+}
+
+th {
+	text-align: center;
+	font-family: arial;
+	font-weight: bold;
+}
+
+#taxTable  td {
+	width: 100%;
+	font-size: 10px;
+	font-family: arial;
+}
+
+.box-body {
+	margin-left: 50px;;
+}
+
+.select-div {
+	margin-top: 20px;
+}
+
+.j_body {
+	margin-top: 10px;
+	height: 400px;
+	overflow: auto;
+}
+
+.divSpn {
+	position: absolute;
+	top: 160px;
+	left: 120px;
+}
+
+.spn {
+	width: 80px;
+	height: 80px;
+	display: none;
+}
+
+.box-j1 {
+	min-height: 562px;
+}
+
+.box-j2 {
+	min-height: 562px;
+}
+
+.jCalc {
+	margin-top: 10px;
+	margin-bottom: 0px;
+	margin-left: 10px;
+	margin-right: 0px;
+	height: 300px;
+	overflow: auto;
+	background-color: #fff;
+}
+
+.pCalc {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 20px;
+	margin-right: 20px;
+	background-color: #DEEAEE;
+}
+
+.sCalc {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 10px;
+	background-color: #f1f1f1;
+}
+
+.sCalc-box1 {
+	height: 60px;
+}
+
+.sCalc-box2 {
+	height: 60px;
+}
+
+.sCalc-box3 {
+	height: 60px;
+}
+
+.taxDisplay-box {
+	height: 110px;
+	overflow: auto;
+	display: none;
+}
+
+.input-border {
+	border: none;
+	color: transparent;
+	display: inline-block;
+	text-shadow: 0 0 0 gray;
+	&:
+	focus
+	{
+	outline
+	:
+	none;
+}
+
+}
+.qty.form-control {
+	width: 50px;
+}
+
+.action-box {
+	
+}
+
+.moreDiv {
+	padding-bottom: 10px;
+}
+
+.moreTableDiv {
+	text-align: center;
+}
+
+.moreTableDiv th {
+	text-align: center;
+}
+
+.jClientSearch {
+	margin: 10px;
+}
+
+figure {
+	float: none;
+	display: table;
+	width: 50%;
+	text-align: center;
+	font-weight: bold;
+	font-size: smaller;
+	text-indent: 0;
+	color: green;
+	border: thin silver solid;
+	margin: 0.5em;
+	padding: 0.5em;
+}
+
+img.scaled {
+	width: 100%;
+}
+
+.fig figcaption {
+	text-overflow: ellipsis1;
+}
+
+.tblCaption {
+	display: none;
+	text-align: center;
+	font-weight: bold;
+}
+
+.client_nameSpn {
+	text-transform: uppercase;
+}
+
+.h3Registration {
+	text-align: center;
+	color: #008000;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.inputDisp {
+	display: none;
+}
+
+.inputDisPaid {
+	color: #008000;
+	font-weight: bold;
+}
+
+.inputDisBal {
+	color: #FF0000;
+	font-weight: bold;
+}
+
+.btn-js {
+	border-radius: 50%;
+}
+
+.btn-js2 {
+	border-radius: 50%;
+	left: -310px;
+	position: relative;
+	top: -15px;
+}
+
+.list-size-weight {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.size-weight {
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.badge-success {
+	background-color: #4CAF50 !important;
+}
+
+.badge-danger {
+	background-color: #D9534F !important;
+}
+
+.badge-warning {
+	background-color: #F0AD4E !important;
+}
+
+.badge-info {
+	background-color: #5BC0DE !important;
+}
+
+.badge-primary {
+	background-color: #337AB7 !important;
+}
+
+.fa-style {
+	font-size: 20px;
+	color: green;
+}
+
+.pwd-h4 {
+	padding: 20px;
+	background-color: #5BC0DE;
+	color: white;
+	font-weight: bold;
+}
+
+.sidebar-menu .treeview-menu>li>a {
+	padding: 5px 5px 5px 15px;
+	display: block;
+}

@@ -1,0 +1,33 @@
+<?php
+//defined('BASEPATH') OR exit('No direct script access allowed');
+
+class AndroidLogin_model extends CI_Model {
+
+public function validate($username,$password){
+		$this->db->where('icw_userName0317', $username);
+		$this->db->where('icw_userPwd0317', md5($password));
+		$this->db->select('icw_userId0317 as uid,icw_user_is_active0317 as sts,icw_userName0317 as loginname,icw_userPwd0317 as pwd');
+		$query = $this->db->get('icw_users_0317');
+		//echo $this->db->last_query();
+		$row = $query->row();
+		if($query->num_rows() == 1){
+				if($row->sts == 1){					
+						$data = array(
+					'shl_ss_230218u' => $row->uid,
+					'usernamee' => $row->loginname,
+					'shl_validated' => true,
+					'shl_logged_in' => true,
+						);
+						$this->session->set_userdata($data);
+						return '200';
+				}else{
+					return '201';
+				}
+		}else{
+			return '202';
+		}
+		
+	}
+
+}
+?>

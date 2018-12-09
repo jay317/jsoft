@@ -1,0 +1,92 @@
+
+
+.select-div{
+	margin-top:20px;
+}
+.j_body{
+	margin-top:10px;
+	height: 400px;
+    overflow: auto;
+}
+.divSpn{
+position:absolute;
+top:160px;
+left:120px;
+}
+.spn{
+width: 80px;
+height:80px;  
+display: none;
+
+}
+
+
+.box-j1{
+	height:700px;	
+}
+
+.box-j2{
+	height:700px;	
+}
+.jCalc{
+	margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+	height:340px;
+	overflow:auto;
+	background-color:#F0F0F0;
+}
+.sCalc{
+	height: 250px;
+	margin-top: 0px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+	background-color:#DEEAEE;
+}
+.sCalc-box1{
+	
+	height:60px;
+}
+.sCalc-box2{
+	
+	height:60px;
+}
+.taxDisplay-box{
+	height:120px;
+	overflow:auto;
+}
+.input-border{
+	border: none;
+    color: transparent;
+    display: inline-block;
+    text-shadow: 0 0 0 gray;
+    
+    &:focus {
+        outline: none;
+    }
+}
+
+.qty.form-control {
+    width: 50px;
+}
+
+.action-box{
+	margin: 25px 0 0 62px;
+}
+
+.moreDiv{
+	padding-bottom:10px;
+}
+.moreTableDiv{
+	text-align:center;
+}
+.moreTableDiv th{
+	text-align:center;
+	
+}
+
+
+
+
+

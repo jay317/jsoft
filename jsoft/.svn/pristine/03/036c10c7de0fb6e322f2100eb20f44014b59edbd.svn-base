@@ -1,0 +1,165 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet"
+	href="<?php echo base_url();?>assets/plugins/bootstrap/css/bootstrap.min.css"></link>
+<link rel="stylesheet"
+	href="<?php echo base_url();?>assets/font-awesome/css/font-awesome.min.css"></link>
+<link rel="stylesheet"
+	href="<?php echo base_url();?>assets/plugins/billingCss/invoice2.css"></link>
+
+<?php
+//print_r($invo_data); 
+
+$settingDetails = $this->session->userdata('settingDetails');
+$printerType = $settingDetails->icw_shop_printer0317;
+$hsnDisplay = $settingDetails->icw_shop_hsn0317;
+?>
+<style>
+hr {
+	border: none;
+	border-top: 1px dotted black;
+	color: #fff;
+	background-color: #fff;
+	height: 1px;
+	width: 100%;
+	margin: 0em;
+}
+
+td {
+	height: 12px;
+	font-size: 11px;
+}
+</style>			
+		<div class="" style="width: 10%; margin-left: 30%; border:1px;">
+		<table class="icwprint">
+			<tr>
+				<td colspan=2><center>
+						<ul class="list-unstyled">
+							<li><?php if($settingDetails){ echo strtoupper($settingDetails->icw_shop_name0317);}?>
+							</li>
+							<li><?php if($settingDetails){ echo ucwords($settingDetails->icw_shop_Address0317);}?>
+							</li>
+						</ul>
+					</center></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan=4><hr></td>
+			</tr>
+<?php foreach ($invo_data as $dt) {}?>
+			<tr>
+				<td>Bill No:</td>
+				<td colspan=1><?php if($invo_data){ echo $dt->ordno;}?>
+				</td>
+			</tr>
+			<tr>
+				<td>BillDate:</td>
+				<td colspan=1><?php if($invo_data){ $date=$dt->date; echo $newDate = date("d/m/Y", strtotime($date));}?>
+				</td>
+			</tr>
+			<tr>
+				<td>GSTIN:</td>
+				<td colspan=1><?php if($settingDetails){ echo strtoupper($settingDetails->icw_shop_gstin0317);}?>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=4><hr></td>
+			</tr>
+			<tr>
+				<td colspan=2><?php if($invo_data){ if($dt->ordtype==0)echo "Dine In";}if($dt->ordtype==1){echo "Parcel";}?></td><td colspan=2><?php if($invo_data){ echo $dt->tblno;}?></td>
+			</tr>
+			<tr>
+				<td colspan=4><hr></td>
+			</tr>
+			<tr>
+				<td colspan=4><hr></td>
+			</tr>
+			<tr>
+				<td>Particular</td>
+				<td style="text-align: center;">Qty</td>
+				<td>Rate</td>
+				<td>Value</td>
+			</tr>
+			<tr>
+				<td colspan=4><hr></td>
+			</tr>
+			<?php
+    
+$qty = 0;
+    if ($invo_data) {
+           foreach ($invo_data as $dt) {
+            ?>
+			<tr>
+				<td><?php if($invo_data){ echo ucfirst(substr($dt->item,0,6));}?>
+				</td>
+				<td style="text-align: center;"><?php if($invo_data){ echo $dt->qty;}?>
+				</td>
+				<td><?php if($invo_data){ echo $dt->price;}?>
+				</td>
+				<td><?php if($invo_data){ echo $dt->itemtotal;}?>
+				</td>
+			</tr>
+			<?php if($invo_data){ $qty +=$dt->qty;}}}?>
+
+			<tr>
+				<td colspan=4><hr></td>
+			</tr>
+			<tr>
+				<td>Items:&nbsp;<?php if($invo_data){ echo count($invo_data);}?>
+				</td>
+				<td>Qty:&nbsp;<?php echo $qty;?></td>
+				<td colspan=2>&nbsp;&nbsp;&nbsp;&nbsp;Amt:&nbsp;<?php if($invo_data){ echo $dt->total;}?>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=4><hr></td>
+			</tr>
+			<tr>
+				<td colspan=2>Total Tax:&nbsp;&nbsp;<?php if($invo_data){ echo $dt->totaltax;}?>
+				</td>
+				<td colspan=2>&nbsp;&nbsp;&nbsp;&nbsp;Total:&nbsp;<?php if($invo_data){ echo $dt->grandtotal;}?>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=4><hr></td>
+			</tr>
+			<tr>
+				<td colspan=4>GST Breakup Details (Amt INR)</td>
+			</tr>
+			<tr>
+				<td colspan=4>
+					<table width="100%">
+					
+    <?php  //foreach ($getInvoiceQuery21 as $getInvoQuery21) {  ?>
+						<tr class="even_row">
+							<td colspan="3" class="text-right"><b><?php //echo $getInvoQuery21->icw_invoTaxName_0317."  :  ";echo $getInvoQuery21->icw_invo_taxPercent_0317." %";?></b></td>
+							<td class="text-right">
+								&nbsp;&nbsp;&nbsp;&nbsp; Rs.&nbsp;<?php //echo $getInvoQuery21->icw_invoTaxAmt_0317;?>
+							</td>
+						</tr>
+						<?php //}?>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=4><hr></td>
+			</tr>
+			<tr>
+				<td colspan=4>Above prices are inclusive of all taxes</td>
+			</tr>
+			<tr>
+				<td colspan=4>This is computer generated invoice and hence no
+					signature is required.</td>
+			</tr>
+			<tr>
+				<td colspan=4><center>***Thank You***</center></td>
+			</tr>
+
+		</table>
+	</div>
+	
+</body>
+</html>

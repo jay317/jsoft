@@ -1,0 +1,96 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class RestaurantModel extends CI_Model {
+
+function getItems(){
+		$this->db->select('a.icw_pi0317 as pid, a.icw_pn0317 as name, b.icw_imgname0317 as img');
+		$this->db->from('icw_pro_0317 a');
+		$this->db->join('icw_img_0317 b', 'b.icw_pid0317=a.icw_pi0317');
+		$detail_query = $this->db->get()->result();
+		//print_r($detail_query);die;
+		return $detail_query;
+}
+
+function addItems($pid){ 
+		$this->db->select('a.icw_pi0317 as pid, a.icw_pn0317 as name, a.icw_prs0317 as price, b.icw_imgname0317 as img');
+		$this->db->from('icw_pro_0317 a');
+		$this->db->join('icw_img_0317 b', 'b.icw_pid0317=a.icw_pi0317');
+		$this->db->where('a.icw_pi0317',$pid);
+		$detail_query = $this->db->get()->row();
+		//print_r($detail_query);die;
+		return $detail_query;
+}
+
+function orderSave($tblNo,$servNo,$ordType){
+$last_order_no  =$this->db->select('icw_restra_orderNo_0317')->order_by('icw_restra_orderNo_0317','desc')->limit(1)->get('icw_restra_order_0317')->row('icw_restra_orderNo_0317');
+	 	if($last_order_no ==0){
+	 		$last_order_no=1;
+	 	}else{
+	 		$last_order_no=$last_order_no + 1;
+	 	}
+	$previousItems = $this->session->userdata("add_items")?$this->session->userdata("add_items"):array(); 
+	 foreach($previousItems as $row) {
+      $orderData= array(
+      'icw_restra_orderNo_0317'=>$last_order_no,
+      'icw_restra_tblNo0317'=>$tblNo,
+      'icw_restra_servNo0317'=>$servNo,
+      'icw_restra_orderType0317'=>$ordType,
+      'icw_restra_item0317'=>$row['item_name'],
+      'icw_restra_qty0317'=>$row['item_qty'],
+      'icw_restra_price0317'=>$row['item_price'],
+      'icw_restra_total0317'=>$row['item_total']     	
+		);
+	 $orderDataMap= array(
+      'icw_restra_orderNo_0317'=>$last_order_no,
+      'icw_restra_tblNo0317'=>$tblNo,
+      'icw_restra_orderStatus_0317'=>1   	
+		);
+	 $ins=$this->db->insert('icw_restra_order_0317', $orderData);
+	 $ins2=$this->db->insert('icw_restra_ordermap_0317', $orderDataMap);
+	 }
+	  $this->session->set_userdata('add_items', null);
+			return true;
+}
+
+function getBill($tblNo){
+	$this->db->select("icw_restra_tblNo0317 as tblno,icw_restra_item0317 as items, icw_restra_qty0317 as qty, icw_restra_price0317 as price, icw_restra_total0317 as total");
+	$this->db->from("icw_restra_order_0317");
+	$this->db->where("icw_restra_tblNo0317",$tblNo);
+	$res=$this->db->get()->result();
+	if($res){
+		return $res;
+	}else{
+		return false;
+	}
+}
+
+function getbillTable(){
+	$this->db->select("icw_restra_tblNo0317 as tblno");
+	$this->db->from("icw_restra_order_0317");
+	$this->db->group_by("icw_restra_tblNo0317");
+	$this->db->order_by("icw_restra_Id0317","asc");
+	$res=$this->db->get()->result();
+	return $res;
+	//print_r($res);die;
+}
+
+/*function getOrder(){
+	$this->db->select("icw_restra_orderNo_0317 as ordno, icw_restra_tblNo0317 as tblno, group_concat(icw_restra_item0317) as items, group_concat(icw_restra_qty0317) as qty");
+	$this->db->from("icw_restra_order_0317");
+	$this->db->group_by("icw_restra_tblNo0317");
+	$this->db->order_by("icw_restra_orderNo_0317","desc");
+	$res=$this->db->get()->result();
+	return $res;
+}*/
+function getOrder(){
+	$this->db->select("icw_restra_orderNo_0317 as ordno, icw_restra_tblNo0317 as tblno, icw_restra_item0317 as items, icw_restra_qty0317 as qty");
+	$this->db->from("icw_restra_order_0317");
+	$this->db->group_by("icw_restra_tblNo0317");
+	$this->db->order_by("icw_restra_orderNo_0317","desc");
+	$res=$this->db->get()->result();
+	return $res;
+}
+
+}
+?>

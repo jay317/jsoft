@@ -1,0 +1,329 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class ProductModel extends CI_Model {
+
+ 
+public function addProduct($categoryName, $productName, $productCode, $productBarCode, $productPrice, $taxType, $productDescription, $images)
+{
+	
+	$data = array(
+   'icw_cid0317' => $categoryName,
+   'icw_pn0317' => $productName,
+   'icw_pcod0317' => $productCode,
+   'icw_pbcod0317' => $productBarCode,
+   'icw_prs0317' => $productPrice,
+   'icw_ptaxtype0317' => $taxType,
+   'icw_pd0317' => $productDescription,
+   'icw_pisa0317' => 1
+);
+
+$ins = $this->db->insert('icw_pro_0317', $data);
+$pid=$this->db->insert_id();
+foreach($images as $img){
+	$img_dt = array('icw_pid0317'=>$pid,'icw_imgname0317'=>time().'_'.$img);
+$img_ins = $this->db->insert('icw_img_0317', $img_dt); 
+}
+if($ins == TRUE && $img_ins == TRUE)
+{
+return true;
+}else{
+	return false;
+  }
+     
+} 	
+	
+public function getProductsDetail()
+{			
+			
+			$this->db->select('icw_pi0317,icw_pn0317,icw_pisa0317');
+            $this->db->from('icw_pro_0317');
+			$query = $this->db->get();
+			if($query->num_rows() != 0)
+            { 
+                return $query->result(); 
+            }
+            else
+            {
+                return false;
+            }
+			
+			
+}
+
+public function getProDetail($id){
+	
+	        $this->db->select('a.*,b.icw_cn0318');
+            $this->db->from('icw_pro_0317 a'); 
+            $this->db->join('icw_cat_0317 b', 'b.icw_ci0317=a.icw_cid0317');         
+            $this->db->where('a.icw_pi0317',$id);
+            $detail_query = $this->db->get()->row(); 
+           
+            $this->db->select('icw_imgname0317');
+            $this->db->from('icw_img_0317');        
+            $this->db->where('icw_pid0317',$id);
+            $image_query = $this->db->get()->result();
+            
+            if(count($detail_query)> 0)
+            { 
+            ?>
+            <div class="">
+            <div class="row" style="min-height: 50px;">
+            <div class="col-md-12"><h1 style="text-align:center;"><?php echo ucfirst($detail_query->icw_pn0317);?>
+   			</h1></div>
+   			</div>
+            <div class="row" style="min-height: 50px;">
+   			<div class="col-md-6"><p><strong>Category</strong>&nbsp;&nbsp;&nbsp;
+   			 <?php echo ucfirst($detail_query->icw_cn0318);?>
+   			</p></div>
+   			</div>
+   			<div class="row" style="min-height: 50px;">
+  			<div class="col-md-3"><p><strong>Product Code</strong>&nbsp;&nbsp;&nbsp;
+   			 <?php echo ucfirst($detail_query->icw_pcod0317);?>
+   			</p></div>
+  			<div class="col-md-3"><p><strong>Product Bar-Code</strong>&nbsp;&nbsp;&nbsp;
+   			 <?php echo $detail_query->icw_pbcod0317;?>
+   			</p></div>
+   			<div class="col-md-3"><p><strong>Product Price</strong>&nbsp;&nbsp;&nbsp;
+   			 <?php echo $detail_query->icw_prs0317;?>
+   			</p></div>
+   			<div class="col-md-3"><p><strong>Tax Type</strong>&nbsp;&nbsp;&nbsp;
+   			 <?php $dt=$detail_query->icw_ptaxtype0317;if($dt==1){echo "Inclusive";}elseif($dt==2){echo "Exclusive";}else{echo "No Tax";}?>
+   			</p></div>
+			</div>
+			
+			<div class="row" style="min-height: 50px;">
+  			<div class="col-md-12"><p><strong>Description</strong>&nbsp;&nbsp;&nbsp;
+   			 <?php echo ucwords($detail_query->icw_pd0317);?>
+   			</p></div>
+			</div>
+			
+			<div class="row">
+			<?php foreach($image_query as $image_qry){?>
+   			<div class="col-md-5">
+   			<span class="panel panel-success" style="margin: 10px; text-align:center;">
+   			<img  width="200px;" height="200px;" src="<?php echo base_url();?>uploads/product-images/<?php echo $image_qry->icw_imgname0317;?>"/>
+   			 <figcaption><?php echo $image_qry->icw_imgname0317;?></figcaption>
+   			</span></div>
+			<?php } ?>
+			</div>
+			</div>
+			
+			<?php
+                //return $query->result(); 
+            }
+            else
+            {
+                return false;
+            }
+}
+public function getProductById($id)
+{
+	        $this->db->select('a.*,b.icw_cn0318');
+            $this->db->from('icw_pro_0317 a'); 
+            $this->db->join('icw_cat_0317 b', 'b.icw_ci0317=a.icw_cid0317');         
+            $this->db->where('a.icw_pi0317',$id);
+            $detail_query = $this->db->get()->row(); 
+            //print_r($detail_query);
+            $this->db->select('icw_imgname0317');
+            $this->db->from('icw_img_0317');        
+            $this->db->where('icw_pid0317',$id);
+            $image_query = $this->db->get()->result();
+            
+           //echo $this->db->last_query();
+            if(count($detail_query)> 0)
+            { 
+            	return array('detail_query' => $detail_query, 'image_query' => $image_query);
+            }
+            else
+            {
+                return false;
+            }
+}
+
+public function editProduct($id, $categoryName, $productName, $productCode, $productBarCode, $productPrice, $taxType, $productDescription, $images, $isactive)
+{  
+
+	$data = array(
+   'icw_cid0317' => $categoryName,
+   'icw_pn0317' => $productName,
+   'icw_pcod0317' => $productCode,
+   'icw_pbcod0317' => $productBarCode,
+   'icw_prs0317' => $productPrice,
+   'icw_ptaxtype0317' => $taxType,
+   'icw_pd0317' => $productDescription,
+   'icw_pisa0317' => $isactive
+);
+$this->db->where('icw_pi0317', $id);
+$updt = $this->db->update('icw_pro_0317', $data);
+$pid=$id;
+// delete file
+$this->db->select('icw_imgname0317');
+$this->db->where('icw_pid0317', $id);
+$this->db->from('icw_img_0317');
+$qrt=$this->db->get()->result();
+
+$dir='uploads/product-images/';
+foreach($qrt as $qr){
+        unlink(FCPATH.$dir.$qr->icw_imgname0317);
+
+}
+
+$this->db->where('icw_pid0317', $id);
+$this->db->delete('icw_img_0317');
+foreach($images as $img){
+	$img_dt = array('icw_pid0317'=>$pid,'icw_imgname0317'=>time().'_'.$img);
+$img_ins = $this->db->insert('icw_img_0317', $img_dt); 
+}
+if($updt == TRUE && $img_ins == TRUE)
+{
+return true;
+}else{
+	return false;
+  }
+     
+}
+
+public function deleteProductById($id)
+{	
+	$this->db->where('icw_pi0317', $id);
+	$delete1=$this->db->delete('icw_pro_0317');
+	$this->db->where('icw_pid0317', $id);
+	$delete2=$this->db->delete('icw_img_0317'); 
+		if($delete1 == TRUE && $delete2 == TRUE)
+		{
+			return TRUE;
+		}
+
+}
+
+public function getProByCat($id, $ser)
+{			$search=$ser;
+            $this->db->select('icw_pi0317,icw_pn0317,icw_pisa0317');
+            if($search=='barcode'){
+            $this->db->like('icw_pbcod0317',$id);
+            $this->db->or_like('icw_pcod0317',$id);
+            }else{
+            $this->db->where('icw_cid0317',$id);
+            }
+            $this->db->from('icw_pro_0317');
+			$query1 = $this->db->get();
+			if($query1->num_rows() != 0)
+            { 
+            	
+                foreach($query1->result() as $qry)
+               {
+               $imgid=$qry->icw_pi0317;
+                 	$this->db->select('*');
+		            $this->db->where('icw_pid0317',$imgid);
+		            $this->db->from('icw_img_0317');
+					$query2 = $this->db->get()->row();					
+               	?>
+
+               	<span title="<?php echo ucfirst($qry->icw_pn0317);?>" style="float: left; margin:8px; text-align:center; color:green;font-weight:bold; cursor:pointer;" class="panel panel-info">
+               	<img src="<?php echo base_url();?>uploads/product-images/<?php echo $query2->icw_imgname0317;?>" width="100px;" height="100px;" onclick="getDtinfo(<?php echo $qry->icw_pi0317;?>)"/>
+               	<figcaption><?php echo substr(ucfirst($qry->icw_pn0317),0,10);?></figcaption>
+               	</span>
+               	
+               <?php	
+               } 
+            }
+            else
+            {
+                return false;
+            }
+	
+}
+
+/* -----------Tax-------*/
+public function getProductTax()
+{
+$query = $this->db->get('icw_tax_0317');
+return $query;
+}
+public function getSubTaxById($id){
+    $this->db->select('*');
+	$this->db->from('icw_taxmap_0317');
+	$this->db->where('icw_taxId0317', $id); 
+$query = $this->db->get()->result();
+return $query;	
+}
+public function getProductTaxById($id)
+{
+	$this->db->select('*');
+	$this->db->from('icw_tax_0317');
+	$this->db->where('icw_id0317', $id); 
+$query1 = $this->db->get()->row();
+	$this->db->select('icw_subTaxName0317,icw_subTaxPercent0317');
+	$this->db->from('icw_taxmap_0317');
+	$this->db->where('icw_taxId0317', $id); 
+$query2 = $this->db->get()->result();
+$query=array('$query1'=>$query1,'$query2'=>$query2);
+return $query;
+}
+
+public function addProductTax($id='',$taxName,$subTaxName, $subTaxPercent,$taxDescription,$isactive)
+{
+if($taxName !=''){
+$data = array(
+   'icw_taxName0317' => $taxName,
+   'icw_taxNote0317' => $taxDescription,
+   'icw_taxStatus0317' => $isactive
+);
+
+if($id){
+	$this->db->where('icw_id0317', $id);
+	$ins = $this->db->update('icw_tax_0317', $data);
+	$data2 = array(
+   'icw_taxId0317' => $id,
+   'icw_subTaxName0317' => $subTaxName,
+   'icw_subTaxPercent0317' => $subTaxPercent
+);
+$this->db->where('icw_taxId0317', $id);
+$this->db->delete('icw_taxmap_0317');
+ $i = 0;
+foreach($subTaxName as $row){
+    	$data2['icw_taxId0317'] = $id;
+        $data2['icw_subTaxName0317'] = $subTaxName[$i];        
+        $data2['icw_subTaxPercent0317'] = $subTaxPercent[$i];
+        $sub_ins = $this->db->insert('icw_taxmap_0317', $data2);
+        $i++;
+} 
+
+ 
+}else{
+	$ins = $this->db->insert('icw_tax_0317', $data);
+	 	$taxId= $this->db->insert_id();
+ $i = 0;
+foreach($subTaxName as $row){
+    	$data2['icw_taxId0317'] = $taxId;
+        $data2['icw_subTaxName0317'] = $subTaxName[$i];        
+        $data2['icw_subTaxPercent0317'] = $subTaxPercent[$i];
+        $sub_ins = $this->db->insert('icw_taxmap_0317', $data2);
+        $i++;
+}
+}
+return $ins;
+}else{
+	$this->session->set_flashdata('message_empty', 'Tax Name Should Not Be Empty!');
+	redirect('Product/proTax');
+}
+
+}
+
+public function deleteProductTaxById($id)
+{
+	$this->db->where('icw_id0317', $id);
+	$delete1=$this->db->delete('icw_tax_0317'); 
+	$this->db->where('icw_taxId0317', $id);
+	$delete2=$this->db->delete('icw_taxmap_0317'); 
+		if($delete1 == TRUE && $delete2 == TRUE)
+		{
+			return true;
+		}
+}
+
+
+
+}
+?>

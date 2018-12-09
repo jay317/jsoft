@@ -1,0 +1,6 @@
+
+	
+<?php  
+	   foreach($previousItems as $key =>$val){;?>
+	   <span onclick="removeFun(<?php echo $val['item_id'];?>)"><figure><img src="<?php echo base_url();if($val['item_img'] !=''){ echo "uploads/product-images/" .$val['item_img'];}else{ echo "assets/images/no-image.gif" .$val['item_img'];}?>" width='50px;' height='50px;' ><figcaption><?php echo $val['item_name'];?>(<strong><?php echo $val['item_qty'];?></strong>)</figcaption></figure></span>
+<?php }?>

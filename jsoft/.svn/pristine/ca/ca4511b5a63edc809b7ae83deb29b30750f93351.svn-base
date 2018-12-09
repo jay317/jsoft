@@ -1,0 +1,85 @@
+<?php
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Category extends CI_Controller {
+
+	public function __construct() {
+
+		parent::__construct();
+	 if(!$this->session->userdata("username"))
+	 {
+	 	redirect('welcome/index');
+	 }
+	  
+		$this->load->model('CategoryModel');
+
+	}
+
+
+	public function index() {
+		$data['page_title']='Product Category';
+		$data['getPcat']=$this->CategoryModel->getProductCat();
+		$this->load->view('category/product_cat_list',$data);
+
+	}
+	public function addProCat() {
+		$action=$this->input->get('a');
+		$id =$this->uri->segment(3);
+		$id=isset($id)?$id:'';
+		$data=array();
+		if($id){
+			$data['page_title']='Product Category';
+			$data['getPcatById']=$this->CategoryModel->getProductCatById($id);
+			$this->load->view('category/product_cat_add',$data);
+		}else{
+			$data['page_title']='Product Category';
+			$data['getPcatById']='';
+			$this->load->view('category/product_cat_add',$data);
+		}
+
+	}
+
+
+	public function addProductCat() {
+
+		$categoryName = $this->input->post('categoryName');
+		$action = $this->input->get('a');
+		$categoryDescription = $this->input->post('categoryDescription');
+		$id = $this->input->post('hidden_id');
+		$isactive = $this->input->post('isactive');
+		if($action=='update'){
+			$result=$this->CategoryModel->addProductCat($id,$categoryName, $categoryDescription, $isactive);
+			if($result == TRUE)
+			{
+				$this->session->set_flashdata('msg_success', 'Product Category Added Successfully!');
+				redirect('Category/index');
+			}else{
+				$this->session->set_flashdata('msg_error', 'Product Category Not Added!');
+				redirect('Category/index');
+			}
+		}else{
+			$result=$this->CategoryModel->addProductCat('',$categoryName, $categoryDescription, $isactive);
+		if($result == TRUE)
+			{
+				$this->session->set_flashdata('msg_success', 'Product Category Added Successfully!');
+				redirect('Category/index');
+			}else{
+				$this->session->set_flashdata('msg_error', 'Product Category Not Added!');
+				redirect('Category/index');
+			}
+		}
+
+
+	}
+
+	public function deleteProductCat()
+	{
+		$id =$this->uri->segment(3);
+		$res=$this->CategoryModel->deleteProductCatById($id);
+		if($res == TRUE){
+			redirect('Category/index');
+		}
+	}
+
+}
+?>

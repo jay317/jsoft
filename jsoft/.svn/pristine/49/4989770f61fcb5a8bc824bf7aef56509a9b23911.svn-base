@@ -1,0 +1,106 @@
+
+	<section class="content-header">
+		<div class="row">
+			<div class="col-md-3">
+			<a class="btn btn-primary"
+				href="<?php echo site_url('inventory/stockAdd');?>">Add Stock</a>
+			</div>
+			<div class="col-md-6">
+				 <?php if ($this->session->flashdata('msg_error')) { ?>
+					<div class="alert alert-danger col-md-6"> <?= $this->session->flashdata('msg_error') ?> </div>
+				<?php } ?>
+				<?php if ($this->session->flashdata('msg_success')) { ?>
+					<div class="alert alert-info col-md-6"> <?= $this->session->flashdata('msg_success') ?> </div>
+				<?php } ?>
+				<?php if ($this->session->flashdata('msg_delete')) { ?>
+					<div class="alert alert-danger col-md-6"> <?= $this->session->flashdata('msg_delete') ?> </div>
+				<?php } ?>
+			</div>
+			<div class="col-md-3">
+			<ol class="breadcrumb">
+				<li><a href="#"><i class="fa fa-dashboard"></i>Stock</a></li>
+				<li class="active">Dashboard</li>
+			</ol>
+			</div>
+		</div>
+	</section>
+
+	<!-- Main content -->
+	<section class="content">
+		<!-- Small boxes (Stat box) -->
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="  box">
+					<div class="box-header">
+						<h3 class="box-title">Stock List</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<table id="example" class="table table-striped table-bordered table-hover"
+							cellspacing="0" width="100%">
+							<thead>
+                <tr>
+                  <th>Action</th>
+                  <th>Product</th>
+                  <th>Quantity</th>
+				  <th>Supplier</th>
+				  <th>Date</th>
+				  <th>Company</th>
+				  
+                </tr>
+                </thead>
+                <tbody> 
+					<?php  $i=1;
+					foreach ($getStockData as $row){ ?>					
+				 <tr>
+                  <td>
+                  <div class="btn-group">
+					  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+						Action &nbsp;<span class="caret"></span>						
+					  </button>
+					  <ul class="dropdown-menu" role="menu">						
+						<li><a href="<?php echo base_url();?>inventory/stockAdd/?stock_id=<?php echo $row->sid;?>"><i class="fa fa-pencil-square-o text-success" aria-hidden="true"></i><span class="text-success">Edit Stock</span></a></li>
+						<li><a onclick="return confirm(' you want to delete?');" href="<?php echo base_url();?>inventory/deleteStock/?stock_id=<?php echo $row->sid;?>"><i class="fa fa-trash text-danger" aria-hidden="true"></i><span class="text-danger">Delete Stock</span></a></li>						
+					  </ul>
+					</div>
+				   </td>
+                  <td><?php echo ucfirst($row->product); ?></td>
+                  <td><?php echo $row->quantity; ?></td>
+				  <td><?php echo ucfirst($row->supplier); ?></td>
+				  <td><?php echo ucfirst($row->dates); ?></td>
+				  <td><?php echo ucfirst($row->company); ?></td>
+				  
+				
+                </tr>
+				<?php } ?>
+			   </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</section>
+	<!-- /.content -->
+</div>
+
+
+<!-- /.content-wrapper -->
+
+<div class="control-sidebar-bg"></div>
+</div>
+
+<!-- ./wrapper -->
+<script>
+$(document).ready(function() {
+    $('#example').DataTable({
+    	  "scrollX": true
+        });
+} );
+ setTimeout(function() {
+            $('.alert').hide('fast');
+        }, 10000);
+</script>
+
+</body>
+</html>

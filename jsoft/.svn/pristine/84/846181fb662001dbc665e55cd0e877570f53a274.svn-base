@@ -1,0 +1,4 @@
+<?php
+function getCurrencyDouble($amount){
+	return "<i class=\"fa fa-inr\"></i>".round($amount,2);
+}

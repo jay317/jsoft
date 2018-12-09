@@ -1,0 +1,123 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+
+class  ClientModel extends CI_Model{
+
+function addClient($id='',$cName,$cMobile,$cEmail,$cBusinessTitle,$cGrn,$cAddress1,$cAddress2,$city,$state,$postalCode,$country,$image){
+	
+	$data=Array( 
+	'icw_clientName0317' =>$cName,
+	'icw_clientMobile0317' =>$cMobile,
+	'icw_clientEmail0317' =>$cEmail,
+	'icw_clientBtitle0317 ' =>$cBusinessTitle,
+	'icw_clientGrn0317' =>$cGrn,
+	'icw_clientAddr10317 ' =>$cAddress1,
+	'icw_clientAddr20317' =>$cAddress2,
+	'icw_clientCity0317' =>$city,
+	'icw_clientState0317' =>$state,
+	'icw_clientZipCode0317' =>$postalCode,
+	'icw_clientCountry0317' =>$country,
+	'icw_clientImg0317' =>$image,
+	'icw_isa0317' =>1
+	);
+	
+	if($id)
+	{
+		$this->db->where('icw_clientId0317', $id);
+	    $updts = $this->db->update('icw_clients_0317', $data); 
+	    return $updts;
+	}else{
+	    $ins = $this->db->insert('icw_clients_0317', $data);
+	    return $ins;
+	}
+	
+}
+
+public function getClient()
+{
+		$this->db->select('a.*,b.id,b.country_name');
+		$this->db->from('icw_clients_0317 a');
+		$this->db->join('icw_countries b','a.icw_clientCountry0317=b.id');
+		$this->db->order_by("a.icw_clientId0317",'desc');
+$query = $this->db->get();
+return $query;
+}
+
+public function getClientById($id)
+{
+	$this->db->select('a.*,b.id,b.country_name');
+	$this->db->from('icw_clients_0317 a');
+	$this->db->join('icw_countries b','a.icw_clientCountry0317=b.id');
+	$this->db->where('icw_clientId0317', $id); 
+$query = $this->db->get()->row();
+return $query;
+}
+public function purchaseDetails($client_id){
+        $this->db->select('*');
+		$this->db->from('icw_invoice_0317');
+		 //$this->db->from('icw_invoice_prodetails_0317');
+		$this->db->where('icw_balanceAmt0317 >',0);
+		$this->db->where('icw_clientId0317',$client_id);
+		$purchaseDuesList=$this->db->get()->result();
+
+		$this->db->select('max(icw_invoDate0317) as icw_invoDate0317');
+		$this->db->from('icw_invoice_0317');
+		$this->db->where('icw_clientId0317',$client_id);
+		$purchaseLastDate=$this->db->get()->row();
+		
+		$this->db->select('sum(icw_totalAmt0317) as icw_totalAmt0317,sum(icw_amtWithTax0317) as icw_amtWithTax0317,sum(icw_paidAmount0317) as icw_paidAmount0317,sum(icw_balanceAmt0317) as icw_balanceAmt0317');
+		$this->db->from('icw_invoice_0317');
+		$this->db->where('icw_clientId0317',$client_id);
+		$blncData=$this->db->get()->row();
+		
+		
+		$qry=array('dueList'=>$purchaseDuesList,'lastDate'=>$purchaseLastDate,'blncData'=>$blncData);
+		return $qry;
+}
+
+
+public function getCountry()
+{
+$query = $this->db->get('icw_countries');
+return $query;
+}
+
+public function getClientInfo($data){
+	$this->db->select('*');
+	$this->db->from('icw_clients_0317');
+	$this->db->like('icw_clientName0317',$data);
+	//$this->db->where('icw_clientName0317', $data); 
+$query = $this->db->get()->result();
+return $query;
+}
+
+public function getClntByDt($clntName,$clntMobile){
+	if($clntName !=''){ 
+	$this->db->select('*');
+	$this->db->from('icw_clients_0317');
+	$this->db->like('icw_clientName0317',$clntName); 
+$query = $this->db->get()->result();
+	if($query){
+	return $query;
+	}else{
+		return false;
+	}
+}elseif($clntMobile !='') { 
+	$this->db->select('*');
+	$this->db->from('icw_clients_0317');
+	$this->db->like('icw_clientMobile0317',$clntMobile); 
+$query = $this->db->get()->result();
+	if($query){
+	return $query;
+	}else{
+		return false;
+	}
+}else{
+	return false;
+}
+
+}
+
+} 
+?>

@@ -1,0 +1,187 @@
+<style>
+</style>
+<section class="content-header">
+	<h1>
+	<?php echo $page_title?>
+	</h1>
+	<ol class="breadcrumb">
+		<li><a href="<?php
+
+echo base_url();
+?>"><i class="fa fa-dashboard"></i>Home</a></li>
+		<li class="active">Dashboard</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<!-- Small boxes (Stat box) -->
+	<div class="row">
+		<div class="col-md-5">
+			<div class="box">
+				<div class="box-header with-border">
+					<h3 class="box-title">Orders</h3>
+					<div class="box-tools pull-right">
+					<div class="col-md-6">
+							<select class="form-control">
+								<option>Select Order Type</option>
+								<option>Dine In</option>
+								<option>Take Away</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<select class="form-control" name="table_no" id="table_no">
+								<option>Select Table</option>
+                      <?php foreach($table_list as $row){?>	
+                    <option
+									value="<?php
+                        echo $row->tname;
+                        ?>"><?php if($row->tname!=''){echo $row->tname;}?></option>
+                      <?php }?>		
+                    </select>
+						</div></div>
+				</div>
+				
+				<!-- /.box-header -->
+				<div class="box-body" style="max-height: 400px; overflow-y: scroll;">
+					<div class="p20">
+					
+					</div>
+					<div class="slctItemsAr"></div>
+					<div class="trackArea"></div>
+				</div>
+				<div class="box-footer">
+					<button class="btn btn-danger pull-right">Cancel Order</button>
+					<button class="btn btn-success pull-right">Pay Bill</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-7">
+			<div class="box box-danger">
+				<div class="box-header with-border">
+					<h3 class="box-title">Item List</h3>
+
+					<div class="box-tools pull-right">
+						<div class="col-md-10">
+							<input type="text" placeholder="Search Item" id="search"
+								onkeyup="myFunction()" class="form-control ">
+						</div>
+						<button type="button" class="btn btn-box-tool"
+							data-widget="collapse">
+							<i class="fa fa-minus"></i>
+						</button>
+					</div>
+				</div>
+				<div class="box-body no-padding" style="height: 400px;overflow-y:scroll;">
+					<ul class="users-list clearfix " id="myUL">
+                    <?php foreach($getItems as $k=>$v){ ?>
+                    <li class="border-all"
+							onclick="addItems(<?php echo $v->pid;?>);"><img
+							src="<?php echo base_url();if($v->img !=''){echo 'uploads/product-images/'. $v->img;}else{echo 'assets/images/no-image.gif' . $v->img;}?>"
+							alt="User Image"> <a class="users-list-name" href="#"><?php echo ucwords($v->name);?></a>
+						</li>
+                    <?php }?>
+                  </ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</section>
+
+<script>
+	function reitem(id){
+		//alert(id);
+		var i= $("#item_quantity"+id).val()
+		//alert(i);
+		i=i-1;
+		$("#item_quantity"+id).val(i)
+		}
+	function additem(id){
+		//alert(id);
+		var i= $("#item_quantity"+id).val()
+		
+		i=parseInt(i) + 1;
+		$("#item_quantity"+id).val(i)
+		}
+function myFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("search");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("a")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function removeFun(e){
+	url = "<?php echo site_url('restaurant/removeItems?pid="+e+"');?>";
+	$.ajax({
+	    type: 'POST',
+	    url: url,
+	    data:[],
+	    cache:false,
+	    contentType: false,
+	    processData: false,
+	    success: function(response) {  	
+	    	 $('.slctItemsAr').html(response);
+	    },
+	    error: function(response) {	        
+	    }
+	    });
+}
+function addItems(e){
+	url = "<?php echo site_url('restaurant/addItems?pid="+e+"');?>";
+	$.ajax({
+	    type: 'POST',
+	    url: url,
+	    data:[],
+	    cache:false,
+	    contentType: false,
+	    processData: false,
+	    success: function(response) {  	
+	    	 $('.slctItemsAr').html(response);
+	    },
+	    error: function(response) {    
+	    }
+	    });
+}
+
+function removeFun(e){
+	url = "<?php echo site_url('restaurant/removeItems?pid="+e+"');?>";
+	$.ajax({
+	    type: 'POST',
+	    url: url,
+	    data:[],
+	    cache:false,
+	    contentType: false,
+	    processData: false,
+	    success: function(response) {  	
+	    	 $('.slctItemsAr').html(response);
+	    },
+	    error: function(response) {	        
+	    }
+	    });
+}
+$("#table_no").on('change', function(){
+	var tbl=$(this).val();
+	url = "<?php echo site_url('restaurant/getBill?tblno="+tbl+"&type=ord');?>";
+	$.ajax({
+	    type: 'POST',
+	    url: url,
+	    data:[],
+	    success: function(response) {  
+		    $('.trackArea').html(response);
+	    },
+	    error: function(response) {	        
+	    }
+	    });
+});
+</script>

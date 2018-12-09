@@ -1,0 +1,73 @@
+
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->    
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="<?php if($this->uri->segment(2)=='dashboard'){echo "active";}?>">
+          <a href="<?php echo site_url('mainController/dashboard');?>"><i class="fa fa-dashboard"></i><span>Dashboard</span></a>
+        </li>
+		<?php if($_SESSION['usertype']=='admin'){?>
+		<li class="">
+          <a href="<?php echo site_url('mainController/user');?>"><i class="fa fa-user"></i><span>User</span></a>
+        </li>
+		<?php } ?>
+        <li class="<?php if($this->uri->uri_string()=='product/index' OR $this->uri->uri_string()=='Category/index' OR $this->uri->uri_string()=='product/proTax'){echo "active";}?> treeview">
+          <a href="#">
+            <i class="fa fa-cart-plus"></i>
+            <span>Product</span>
+            <span class="pull-right-container">
+              <span class="label label-primary pull-right">3</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+			<li><a href="<?php echo site_url('product/index');?>"><i class="fa fa-circle-o"></i> Products list</a></li>
+            <li><a href="<?php echo site_url('Category/index');?>"><i class="fa fa-circle-o"></i>Products Category list</a></li>
+            <li><a href="<?php echo site_url('product/proTax');?>"><i class="fa fa-circle-o"></i>Products Tax</a></li>
+          </ul>
+        </li>
+		 <li class="<?php if($this->uri->uri_string()=='sale/index'){echo "active";}?> treeview">
+          <a href="#">
+            <i class="fa fa-shopping-bag"></i>
+            <span>Sale</span>
+            <span class="pull-right-container">
+              <span class="label label-primary pull-right">1</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo site_url('sale/index');?>"><i class="fa fa-circle-o"></i>Sale</a></li>
+          </ul>
+        </li>
+         <li class="treeview <?php if($this->uri->uri_string()=='client/index' OR $this->uri->uri_string()=='sale/invoiceGenerate' OR $this->uri->uri_string()=='product/proTax'){echo "active";}?>">
+          <a href="#">
+            <i class="fa fa-group"></i>
+            <span>Client</span>
+            <span class="pull-right-container">
+              <span class="label label-primary pull-right">2</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo site_url('client/index');?>"><i class="fa fa-circle-o"></i>Clients</a></li>
+            <li><a href="<?php echo site_url('sale/invoiceGenerate');?>"><i class="fa fa-circle-o"></i>Generate Invoice</a></li>           
+          </ul>
+        </li>
+		<?php if($_SESSION['usertype']=='admin'){?>
+         <li class="treeview">
+          <a href="#">
+            <i class="fa fa fa-bar-chart"></i>
+            <span>Report</span>
+            <span class="pull-right-container">
+              <span class="label label-primary pull-right">1</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">            
+            <li><a href="<?php echo site_url('report/reports');?>"><i class="fa fa-bar-chart"></i> Report</a></li>
+          </ul>
+        </li>
+		<?php } ?>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>

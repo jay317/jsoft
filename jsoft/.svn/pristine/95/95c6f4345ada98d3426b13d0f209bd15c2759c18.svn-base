@@ -1,0 +1,118 @@
+
+	<section class="content-header">
+			<!-- <a class="btn btn-primary"
+			href="<?php// echo site_url('excel_export/export');?>">Excel export</a>-->
+		<ol class="breadcrumb"> 
+			<li><a href="#"><i class="fa fa-dashboard"></i>Invoice Report</a></li>
+			<li class="active">Dashboard</li>
+		</ol>
+	</section>
+
+	<!-- Main content -->
+	<section class="content" style="margin-top:10px;">
+		<!-- Small boxes (Stat box) -->
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="  box">
+					<div class="box-header">
+						<h3 class="box-title">Invoice Report</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<table id="example" class="table table-striped table-bordered table-hover"
+							cellspacing="0" width="100%">
+							<thead class="bg-danger">
+								<tr>
+									<th>Action</th>
+									<th>Invoice NO.</th>
+									<th>Status</th>									
+									<th>Date</th>
+									<th>Name</th>
+									<th>Mobile</th>
+									<th>Shop Name</th>
+									<th>Amount</th>
+									<th>Paid</th>
+									<th>Balance</th>
+								</tr>
+							   </thead>	
+							<tbody>
+							<?php foreach($getinvoiceReport as $row):?>
+								<tr class="bg-success">
+									<td>
+									<div class="btn-group">
+										 <a  title="Print" href="<?php echo site_url('sale/invoicePrint?id='.$row->invo_no);?>" target="_blank" class="btn btn-primary"><i class="fa fa-print" aria-hidden="true"></i></a> 
+										 <a title="Delete" onclick="deleteInvoice(<?php echo $id=$row->invo_no;?>);" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a> 						
+									  
+									</td>
+									<td><?php echo $row->invo_no; ?></td>
+									<td>
+									<?php 
+									if($row->balance == 0)
+									{
+									echo '<span class="label label-success">Paid</span>'; 
+									}else{
+										echo '<span class="label label-info">Due</span>';
+									}
+									?></td>									
+									<td><?php echo $row->invodate; ?></td>
+									<td><?php echo $row->clientname; ?></td>
+									<td><?php if($row->clientmobile !=''){echo $row->clientmobile;}else{echo $row->customermobile;} ?></td>
+									<td><?php echo $row->clientbtitle; ?></td>
+									<td><?php echo $row->total;?></td>
+									<td><?php echo $row->paid;?></td>
+									<td><?php echo $bal=$row->balance;?></td>
+								</tr>
+							<?php endforeach;?>
+							</tbody>
+							
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</section>
+	<!-- /.content -->
+</div>
+
+
+
+<!-- /.content-wrapper -->
+<div class="control-sidebar-bg"></div>
+</div>
+
+<!-- ./wrapper -->
+<script>
+$(document).ready(function() {
+    $('#example').DataTable({
+    	  "scrollX": true
+        });
+} );
+
+function deleteInvoice(id){
+var id=id;
+swal({
+	  title: 'Are you sure?',
+	  text: "Do you want to delete",
+	  type: 'warning',
+	  showCancelButton: true,
+	  confirmButtonColor: '#3085d6',
+	  cancelButtonColor: '#d33',
+	  confirmButtonText: 'Yes',
+	  cancelButtonText: 'No',
+	  confirmButtonClass: 'btn btn-success',
+	  cancelButtonClass: 'btn btn-danger',
+	  buttonsStyling: false,
+	  preConfirm: function(){ 
+url = "<?php echo site_url('report/deleteInvoice?id="+id+"');?>";
+ $.post(url, {id: id}, function(result){
+		   if(result=='1'){
+			   window.location.reload();
+		   }
+        });
+  }});	
+}
+</script>
+
+</body>
+</html>

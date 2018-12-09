@@ -1,0 +1,78 @@
+<!-- Content Header (Page header) -->
+	<section class="content-header">
+		<div class="row">
+			<div class="col-md-3">
+		    </div>
+			<div class="col-md-6">
+			</div>
+			<div class="col-md-3">
+		    </div>
+		</div>
+	</section>
+
+	<!-- Main content -->
+	<section class="content">
+		<!-- Small boxes (Stat box) -->
+		<div class="row">
+		<?php 
+		//print_r($ord_list);
+		foreach ($ord_list as $orders){?>
+			<div class="col-md-3">
+          <!-- DIRECT CHAT PRIMARY -->
+          <div class="panel panel-default">
+            <div class="box-header with-border">
+              <h3 class="box-title ">Order No : <?php echo $orders->ordno;?> <span data-toggle="tooltip" title="3 New Messages" class="badge bg-light-blue">3</span></h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <!-- Conversations are loaded here -->
+              <div class="direct-chat-messages">
+                <!-- Message. Default to the left -->
+               
+                <div class="direct-chat-msg">
+                  <div class="direct-chat-text">
+                   Table:<?php echo $orders->tblno;?>
+                  </div>
+                  <table>
+                  <?php $data=array($orders->items=>$orders->qty);foreach($data as $k=>$v){?>
+                  <tr>
+                  <td></td><?php echo $k;?><td> <?php echo $v;?></td></tr>
+                  <?php } ?>
+                  </table>
+                </div>
+
+               
+              </div>
+
+            </div>
+          </div>
+          <!--/.direct-chat -->
+        </div>
+        <?php }?>
+        <!-- /.col -->
+
+		</div>
+
+	</section>
+	<!-- /.content -->
+</div>
+
+
+<!-- /.content-wrapper -->
+<div class="control-sidebar-bg"></div>
+</div>
+
+<!-- ./wrapper -->
+<script>
+$(document).ready(function() {
+    $('#example').DataTable({
+    	  "scrollX": true
+        });
+});
+setTimeout(function() {
+            $('.alert').hide('fast');
+        }, 10000);
+</script>
+
+</body>
+</html>

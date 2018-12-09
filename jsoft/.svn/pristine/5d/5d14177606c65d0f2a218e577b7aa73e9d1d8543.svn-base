@@ -1,0 +1,251 @@
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+    <div class="row bg-info">
+	    <div class="top-head">
+	     <select name="orderType" class="form-group orderType">
+	    	<option value="0">Dine In</option>
+	    	<option value="1">Take Away</option>
+	    </select><?php foreach($getbillTable as $k=>$billTbl){ $tbl=$billTbl->tblno; print_r($k);}?>
+	    <select name="tableSelect" class="form-group tableSelect" data-toggle="collapse" data-target="#demo">
+	    	<option value=""></option>	    	
+	    	<?php 	echo "<pre>";    	
+	    	$tblmatch=0;
+	    	$i=0; for($i=1;$i<=20;$i++){ $tdata=0;
+	        foreach($getbillTable as $billTbl){ $tblmatch = $billTbl->tblno;
+	        
+	    	?>    	
+	    	<option value="<?php echo $i;?>" <?php if($tblmatch ==$i){echo " selected";}?> ><?php echo $i . "&nbsp;&nbsp;"; if($tblmatch==$i){echo "<strong class='text-danger'>OC.</strong>";}else{echo "<strong class='text-danger'>FR.</strong>";}?></option>
+	    	<?php }$tblmatch=$i; } echo "</pre>";?>
+	    </select>
+	    <select name="servingBy" class="form-group servingBy">
+	    	<option value=""></option>
+	    	<?php $i=0; for($i=1;$i<=10;$i++){?>
+	    	<option value="<?php echo $i;?>"><?php echo $i;?></option>
+	    	<?php }?>
+	    </select>
+	    <select name="billSelect" class="form-group billSelect" data-toggle="modal" data-target="#billModal" aria-hidden="true">
+	    	<option value=""></option>
+	    	<?php foreach($getbillTable as $billTbl){ ?>
+	    	<option value="<?php if($billTbl->tblno !=''){echo $billTbl->tblno;}?>" ><?php if($billTbl->tblno !=''){echo $billTbl->tblno;}?></option>
+	    	<?php }?>
+	    </select>
+	    </div>
+    </div>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12 box">
+         <div class="col-md-6">
+         		<section>
+					  <div class="panel-group collapse1" id="demo">
+					    <div class="panel panel-default">
+					      <div class="panel-heading">
+					        <h4 class="panel-title">
+					          <a data-toggle="collapse" href="#collapse1">Track Order</a>
+					        </h4>
+					      </div>
+					      <div id="collapse1" class="panel-collapse collapse">
+					        <div class="panel-body">
+					        	<div class="col-md-3">
+					        		<select name="billSelect" class="form-group orderTrack">
+								    	<option value=""></option>
+								    	<?php foreach($getbillTable as $billTbl){ ?>
+								    	<option value="<?php if($billTbl->tblno !=''){echo $billTbl->tblno;}?>" ><?php if($billTbl->tblno !=''){echo $billTbl->tblno;}?></option>
+								    	<?php }?>
+								    </select>
+					        	</div>
+					        	<div class="col-md-8">
+					   				<div class="trackArea"></div>
+					        	</div>
+					        </div>
+					      </div>
+					    </div>
+					  </div>					
+				</section>
+         <h3 class="bg-primary">SELECTED ITEMS</h3>
+         <div class="slctItemsArea bg-danger">
+         	<?php  $previousItems = $this->session->userdata("add_items")?$this->session->userdata("add_items"):array();
+				   foreach($previousItems as $key =>$val){;?>
+				   <span onclick="removeFun(<?php echo $val['item_id'];?>)"><figure><img src="<?php echo base_url();if($val['item_img'] !=''){ echo "uploads/product-images/" .$val['item_img'];}else{ echo "assets/images/no-image.gif" .$val['item_img'];}?>" width='50px;' height='50px;' ><figcaption><?php echo $val['item_name'];?>(<strong><?php echo $val['item_qty'];?></strong>)</figcaption></figure></span>
+			<?php }?>
+         </div>
+         <div clas="form-group"><button class="btn btn-success form-control btn-order">Order</button></div>
+         </div>
+		   <div class="col-md-6 bg-info">
+		   <h3 class="">ITEMS AVAILABLE</h3>
+		   <?php foreach($getItems as $k=>$v){ ?>
+		   <span onclick="addItems(<?php echo $v->pid;?>);" ><figure><img src="<?php echo base_url();if($v->img !=''){echo 'uploads/product-images/'. $v->img;}else{echo 'assets/images/no-image.gif' . $v->img;}?>" width="50px;" height="50px;" ><figcaption><?php echo $v->name;?></figcaption></figure></span>
+		   <?php }?>
+		   </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <div class="control-sidebar-bg"></div>
+</div>
+
+<div class="modal" id="billModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:green; color:#ffffff;"> <center><strong>Table Bill</strong></center>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">
+							<i class="fa fa-times" aria-hidden="true"></i>
+						</button>						
+					</div>
+					<div class="modal-body billgetsarea">
+						
+					</div>
+					<div class="modal-footer"><button class="btn btn-success">Print Bill</button></div>					
+				</div>
+				<!-- /.modal-dialog -->
+	</div>
+</div>
+
+<!-- ./wrapper -->
+<!-- script -->
+<script>
+
+
+$(document).ready(function() {
+    $('.tableSelect').select2({
+    	allowClear: true,
+    	placeholder:"Table",
+        width: "5%"
+    });
+$('.servingBy').select2({
+	allowClear: true,
+	placeholder:"Servitor",
+    width: "5%"
+});
+$('.billSelect').select2({
+	allowClear: true,
+	placeholder:"Bill",
+    width: "5%"
+});
+});
+
+function addItems(e){
+	//alert(e);
+	url = "<?php echo site_url('restaurant/addItems?pid="+e+"');?>";
+	$.ajax({
+	    type: 'POST',
+	    url: url,
+	    data:[],
+	    cache:false,
+	    contentType: false,
+	    processData: false,
+	    success: function(response) {  
+		    //alert(response); 	
+	    	 $('.slctItemsArea').html(response);
+	    },
+	    error: function(response) {
+	        
+	    }
+	    });
+}
+
+function removeFun(e){
+	//alert(e);
+	url = "<?php echo site_url('restaurant/removeItems?pid="+e+"');?>";
+	$.ajax({
+	    type: 'POST',
+	    url: url,
+	    data:[],
+	    cache:false,
+	    contentType: false,
+	    processData: false,
+	    success: function(response) {  
+		    //alert(response); 	
+	    	 $('.slctItemsArea').html(response);
+	    },
+	    error: function(response) {
+	        
+	    }
+	    });
+}
+$(".btn-order").on('click',function(){
+	var tbl=$('.tableSelect').val();
+	var serv=$('.servingBy').val();
+	var ordtype=$('.orderType').val();
+	if(ordtype=='0'){
+	if(tbl !='' && serv !=''){ 
+	url = "<?php echo site_url('restaurant/orderSave?tblno="+tbl+"&servno="+serv+"&ordtype="+ordtype+"');?>";
+	$.ajax({
+	    type: 'POST',
+	    url: url,
+	    data:[],
+	    cache:false,
+	    contentType: false,
+	    processData: false,
+	    success: function(response) {  
+		    if(response=='1'){
+			    window.location.reload();}else{}
+	    },
+	    error: function(response) {	        
+	    }
+	    });
+	}else{
+		alert("Table and Servitor Should Not Be Empty.");}
+
+	}else{
+		url = "<?php echo site_url('restaurant/orderSave?tblno="+tbl+"&servno="+serv+"&ordtype="+ordtype+"');?>";
+		$.ajax({
+		    type: 'POST',
+		    url: url,
+		    data:[],
+		    cache:false,
+		    contentType: false,
+		    processData: false,
+		    success: function(response) {  
+			    if(response=='1'){
+				    window.location.reload();}else{}
+		    },
+		    error: function(response) {	        
+		    }
+		    });
+
+		}
+	
+});
+
+$(".orderTrack").on('change', function(){
+	var tbl=$(this).val();
+	alert(tbl);
+	url = "<?php echo site_url('restaurant/getBill?tblno="+tbl+"&type=ord');?>";
+	$.ajax({
+	    type: 'POST',
+	    url: url,
+	    data:[],
+	    success: function(response) {  
+		    $('.trackArea').html(response);
+	    },
+	    error: function(response) {	        
+	    }
+	    });
+});
+function getBill(e){
+	var tbl=e;
+	alert(tbl);
+	$('#billModal').modal('show');
+	url = "<?php echo site_url('restaurant/getBill?tblno="+tbl+"&type=bil');?>";
+	$.ajax({
+	    type: 'POST',
+	    url: url,
+	    data:[],
+	    cache:false,
+	    contentType: false,
+	    processData: false,
+	    success: function(response) {  
+		    $('.billgetsarea').html(response);
+	    },
+	    error: function(response) {	        
+	    }
+	    });
+}
+</script>
+<!--- /scripts --->

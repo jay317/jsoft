@@ -1,0 +1,86 @@
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        <?php echo $page_title;?>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Category</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="box box-info">
+            <div class="box-header with-border bg-success">
+              <div><h2 class="box-title">
+			  <a href="<?php echo site_url('Category/index');?>" class="btn btn-default btn-js"><i class="fa fa-arrow-left" aria-hidden="true" align="left"></i></a>
+			  &nbsp;&nbsp;&nbsp;
+			  <?php if($getPcatById!=''){ echo "Edit";}else { echo "Add";}?> Product Category</h2></div>			  
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <?php if($getPcatById!=''){?>
+            <form class="form-horizontal" id="addForm" method="post" action="<?php echo site_url('category/addProductCat');?>?a=update">
+            <input type="hidden" name="hidden_id" value="<?php echo $getPcatById->icw_ci0317; ?>">
+             <?php }else{?>
+             <form class="form-horizontal" id="addForm" method="post" action="<?php echo site_url('category/addProductCat');?>">
+             <?php }?>
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="categoryName" class="col-sm-2 control-label">Category Name*</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" value="<?php if($getPcatById){echo $getPcatById->icw_cn0318;} ?>" class="form-control" name="categoryName" id="categoryName" placeholder="Product Category Name" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="categoryDescription" class="col-sm-2 control-label">Category Description</label>
+
+                  <div class="col-sm-8">
+                    <textarea name="categoryDescription" class="form-control" id="categoryDescription" placeholder="Product Category Description"> <?php if($getPcatById){echo $getPcatById->icw_cd0319;}?></textarea>
+                  </div>
+                </div>
+                
+                 <div class="form-group">
+                  <label for="categoryDescription" class="col-sm-2 control-label">Status</label>
+
+                  <div class="col-sm-8">
+					 <select name="isactive" class="form-control">					 
+					  <option value="1" <?php if($getPcatById){ if($getPcatById->icw_isa0320==1){echo " selected"; }}?> >Active</option>
+					  <option value="0" <?php if($getPcatById){if($getPcatById->icw_isa0320==0){echo " selected"; }}?> >InActive</option>
+                     </select> 
+				  </div>
+                </div>
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <a href="<?php echo site_url('Category/index');?>" class="btn btn-default col-md-offset-4">Back</a>
+                <button type="submit" class="btn btn-info">Submit</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+		  </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+<!--- /scripts --->
+
+<script>
+$(function () {
+    CKEDITOR.replace('categoryDescription')
+    $('.textarea').wysihtml5()
+  });
+</script>

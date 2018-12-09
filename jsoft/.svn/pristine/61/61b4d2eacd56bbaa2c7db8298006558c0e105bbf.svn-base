@@ -1,0 +1,37 @@
+<?php
+ini_set('memory_limit', '-1');
+class Update extends CI_Controller {
+
+	function __construct()
+	{
+		parent::__construct();
+		//if (!$this->input->is_cli_request()) show_error('Error 404 Not found.',404,'Oops');
+	}
+
+
+	function index(){
+	    $versions=$this->input->get('v');
+	    if($versions){ 
+				switch ($versionId){
+
+					case 1:
+					    
+						break;
+						
+					default
+					echo("Version Dones not exist");
+					break;
+					
+				}
+					}else{
+    echo "" . ($versionId / 10) . "  Version Does Not Exist\n";
+}
+			/*}
+	}
+
+ */
+}
+
+
+
+?>

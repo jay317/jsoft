@@ -1,0 +1,123 @@
+
+<aside class="main-sidebar">
+	<!-- sidebar: style can be found in sidebar.less -->
+	<section class="sidebar">
+		<!-- Sidebar user panel -->
+		<!-- /.search form -->
+		<!-- sidebar menu: : style can be found in sidebar.less -->
+		<ul class="sidebar-menu" data-widget="tree">
+			<li
+				class="<?php if($this->uri->segment(2)=='dashboard'){echo "active";}?>">
+				<a href="<?php echo site_url('mainController/dashboard');?>"><i
+					class="fa fa-dashboard"></i><span>Dashboard</span></a>
+			</li>
+			<li
+				class="<?php if($this->uri->uri_string()=='mainController/setting' OR $this->uri->uri_string()=='mainController/profile' OR $this->uri->uri_string()=='mainController/user'){echo "active";}?> treeview">
+				<a href="#"> <i class="fa fa-cog"></i> <span>Settings</span> <span
+					class="pull-right-container"> <i
+						class="fa fa-angle-down pull-right"></i>
+				</span>
+			</a>
+				<ul class="treeview-menu">
+					<li><a href="<?php echo site_url('mainController/general_setting');?>"><i
+							class="fa fa-circle-o"></i>General Settings</a></li>
+					<li><a href="<?php echo site_url('mainController/profile');?>"><i
+							class="fa fa-circle-o"></i>Profile Settings</a></li>
+							<?php if($_SESSION['usertype']=='admin'){?>
+					<li><a href="<?php echo site_url('mainController/user');?>"><i
+							class="fa fa-circle-o"></i>Admin Users</a></li><?php }?>
+				</ul>
+			</li>
+			<li
+				class="<?php if($this->uri->uri_string()=='product/index' OR $this->uri->uri_string()=='Category/index' OR $this->uri->uri_string()=='product/proTax'){echo "active";}?> treeview">
+				<a href="#"> <i class="fa fa-cart-plus"></i> <span>Product</span> <span
+					class="pull-right-container"> <i
+						class="fa fa-angle-down pull-right"></i>
+				</span>
+			</a>
+				<ul class="treeview-menu">
+					<li><a href="<?php echo site_url('product/index');?>"><i
+							class="fa fa-circle-o"></i> Products list</a></li>
+					<li><a href="<?php echo site_url('Category/index');?>"><i
+							class="fa fa-circle-o"></i>Products Category list</a></li>
+					<li><a href="<?php echo site_url('Category/productSubCat');?>"><i
+							class="fa fa-circle-o"></i>Products Sub Category list</a></li>
+					<li><a href="<?php echo site_url('product/proTax');?>"><i
+							class="fa fa-circle-o"></i>Products Tax</a></li>
+				</ul>
+			</li>
+			<li
+				class="<?php if($this->uri->uri_string()=='sale/index'){echo "active";}?> treeview">
+				<a href="#"> <i class="fa fa-shopping-bag"></i> <span>Sale</span> <span
+					class="pull-right-container"> <i
+						class="fa fa-angle-down pull-right"></i>
+				</span>
+			</a>
+				<ul class="treeview-menu">
+					<li><a href="<?php echo site_url('pos/index');?>"><i
+							class="fa fa-circle-o"></i>Sale</a></li>
+					<li><a href="<?php echo site_url('sale/invoiceGenerate');?>"><i
+							class="fa fa-circle-o"></i>Generate Invoice</a></li>
+				</ul>
+			</li>
+			<li
+				class="treeview <?php if($this->uri->uri_string()=='client/index' OR $this->uri->uri_string()=='sale/invoiceGenerate' OR $this->uri->uri_string()=='product/proTax'){echo "active";}?>">
+				<a href="#"> <i class="fa fa-group"></i> <span>Client</span> <span
+					class="pull-right-container"> <i
+						class="fa fa-angle-down pull-right"></i>
+				</span>
+			</a>
+				<ul class="treeview-menu">
+					<li><a href="<?php echo site_url('client/index');?>"><i
+							class="fa fa-circle-o"></i>Clients</a></li>
+				</ul>
+			</li>
+		<?php if($_SESSION['usertype']=='admin'){?>
+         <li class="treeview"><a href="#"> <i class="fa fa fa-bar-chart"></i>
+					<span>Report</span> <span class="pull-right-container"> <i
+						class="fa fa-angle-down pull-right"></i>
+				</span>
+			</a>
+				<ul class="treeview-menu">
+					<li><a href="<?php echo site_url('report/invoice_report');?>"><i
+							class="fa fa-bar-chart"></i> Invoice</a></li>
+					<li><a href="<?php echo site_url('report/reports');?>"><i
+							class="fa fa-bar-chart"></i> Report</a></li>
+				</ul>
+		 </li>			
+		<?php } ?>
+		<?php if($_SESSION['usertype']=='admin'){?>
+         <li class="treeview"><a href="#"> <i class="fa fa fa-xing"></i>
+					<span>Inventory</span> <span class="pull-right-container"> <i
+						class="fa fa-angle-down pull-right"></i>
+				</span>
+			</a>
+				<ul class="treeview-menu">
+					<li><a href="<?php echo site_url('inventory/supplier');?>"><i
+							class="fa fa-bar-chart"></i>Supplier</a></li>
+					<li><a href="<?php echo site_url('inventory/getStock');?>"><i
+							class="fa fa-bar-chart"></i> Stock</a></li>
+					<li><a href="<?php echo site_url('inventory/getProStock');?>"><i
+							class="fa fa-bar-chart"></i> Product2 Stock</a></li>
+					<li><a href="<?php echo site_url('inventory/getProductStock');?>"><i
+							class="fa fa-bar-chart"></i> Product Stock</a></li>
+				</ul>
+		 </li>			
+		<?php } ?>
+		<li class="treeview">
+				<a href="#"> <i class="fa fa-cog"></i> <span>Tool</span> <span
+					class="pull-right-container"> <i
+						class="fa fa-angle-down pull-right"></i>
+				</span>
+			</a>
+				<ul class="treeview-menu">
+					<li><a href="<?php echo site_url('tool/license');?>" target="_blank"><i
+							class="fa fa-circle-o"></i>License</a></li>
+					<li><a href="<?php echo site_url('tool/backup_restore');?>"><i
+							class="fa fa-circle-o"></i>Backup & Restore</a></li>
+				</ul>
+			</li>
+      </ul>
+	</section>
+	<!-- /.sidebar -->
+</aside>

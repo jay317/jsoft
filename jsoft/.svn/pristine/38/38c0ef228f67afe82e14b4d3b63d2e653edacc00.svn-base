@@ -1,0 +1,77 @@
+<div class="clear-fix" ></div>
+	<!-- Three panes -->
+			<?php require_once 'templates.php';?>
+			
+					<div class="col-md-8 admin-grid">
+					<div class="panel admin-grid-panel" id="mc_11">
+						<form action="<?php echo site_url('mainController/template?a=update&tmp_id='.$_REQUEST['tmp_id']);?>"
+							class="form-horizontal admin-form basic_form_page1" method="post"
+							id="renewalform">
+							<div class="panel-heading">
+								<span class="panel-title">
+								<?php 
+								    if($_REQUEST['tmp_id']==1){ 
+										echo "Customer Order Completion";
+										echo '<input type="hidden" id="template_name" name="template_name" value="Customer_Order_Completion">';		
+									}
+									if($_REQUEST['tmp_id']==2){ 
+										echo "Technician Order Alert";
+										echo '<input type="hidden" id="template_name" name="template_name" value="Technician_Order_Alert">';		
+									}
+								?>
+								</span>							
+							</div>
+							<div class="panel-body">
+								<div class="row">
+									<!-- Multi Text Column -->
+
+									<div class="col-md-12">
+										<div class="section">
+										<input type="hidden" id="hidden_id" name="hidden_id" value="<?php echo $_REQUEST['tmp_id']; ?>">
+											<label for="sms_template" class="field-label">SMS Template</label>
+											<textarea id="sms_template" name="sms_template"
+												class="gui-textarea"><?php if($rslt->icw_sms_tmplt0317 !=''){echo $rslt->icw_sms_tmplt0317;} ?></textarea>
+										</div>										
+										<div class="section row">
+											<label for="r_f_a_0024562" class="field-label col-md-5">Email Subject <em>*</em> </label> <label
+												for="gui-textarea" class="field prepend-icon"> <input
+												type="text" id="email_sub" name="email_sub"
+												value="<?php if($rslt->icw_email_sub0317 !=''){echo $rslt->icw_email_sub0317;} ?>" class="email_sub required"></label>
+										</div>
+										<div class="section">
+											<label for="email_body" class="field-label">Email Body</label>
+											<textarea class="email_template" name="email_template" id="ckeditor1" rows="12"><?php if($rslt->icw_email_tmplt0317 !=''){echo $rslt->icw_email_tmplt0317;} ?></textarea>
+										</div>
+										<div class="section row">
+											<label for="status" class="field-label col-md-5">Status<em class="text-danger">*</em> </label>
+											<div class="col-md-7">
+												<div class="btn-group" id="status" data-toggle="buttons">
+									              <label class="btn btn-info btn-on btn-sm active">									             
+									              <input type="radio" value="1" name="chk_status" <?php if($rslt->icw_template_status0317 !='' && $rslt->icw_template_status0317 ==1){echo 'checked';}?>>ON</label>         
+									              <label class="btn btn-default btn-off btn-sm ">
+									              <input type="radio" value="0" name="chk_status" <?php if($rslt->icw_template_status0317 !='' && $rslt->icw_template_status0317 ==0){echo 'checked';}?>>OFF</label>
+									            
+									            </div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel-footer" align="right">
+								<a href="<?php echo site_url('mainController/tmpltArea');?>" class="btn btn-danger ">Cancel</a>
+								<button type="submit" class="btn btn-primary">Submit</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+<script>
+CKEDITOR.replace('ckeditor1', {
+    height: 210,
+    on: {
+        instanceReady: function(evt) {
+            $('.cke').addClass('admin-skin cke-hide-bottom');
+        }
+    },
+});
+</script>

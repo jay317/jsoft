@@ -1,0 +1,89 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class ReportModel extends CI_Model {
+
+public function getBalSummary($client_id)
+{	
+		$this->db->select('a.icw_clientName0317,a.icw_clientBtitle0317,a.icw_clientMobile0317,a.icw_clientAddr10317,a.icw_clientAddr20317,a.icw_clientCity0317,b.icw_balanceAmt0317,b.icw_paidAmount0317,b.icw_invoDate0317,b.icw_paymentMode0317,b.icw_invoiceNo_0317');
+		$this->db->from('icw_clients_0317 a');
+		$this->db->join('icw_invoice_0317 b','a.icw_clientId0317=b.icw_clientId0317');
+		$this->db->where('a.icw_clientId0317',$client_id);
+		$qry=$this->db->get()->result();
+		return $qry;
+}
+public function customers_balance_report()
+	{
+		$this->db->select('b.icw_clientName0317,b.icw_clientBtitle0317,sum(a.icw_balanceAmt0317) As icw_balanceAmt0317');
+		$this->db->from('icw_clients_0317 b');
+		$this->db->join('icw_invoice_0317 a','b.icw_clientId0317=a.icw_clientId0317');
+		$this->db->group_by('b.icw_clientId0317');
+		$qry=$this->db->get()->result();
+		return $qry;
+	}
+
+public function between_days_sales($fromDate,$toDate,$day)
+{	
+  if(!empty($fromDate) && !empty($toDate)){ 
+	    $this->db->select('*');
+		$this->db->from('icw_invoice_0317');		
+		$this->db->where('icw_invoDate0317 BETWEEN "'. date('Y-m-d', strtotime($fromDate)). '" and "'. date('Y-m-d', strtotime($toDate)).'"');
+		$query=$this->db->get()->result();
+		$msgData=array('fromDate'=>$fromDate,'toDate'=>$toDate);
+			$qry=array('queryData'=>$query,'msgData'=>$msgData);
+		return $qry; 
+   }
+  if($day =='today'){
+		
+		$this->db->select('*');
+		$this->db->from('icw_invoice_0317');
+		$this->db->where('icw_invoDate0317',date('Y-m-d'));
+		$query=$this->db->get()->result();
+		$msgData='today';
+			$qry=array('queryData'=>$query,'msgData'=>$msgData);
+		return $qry;
+	}
+  if($day == 'week'){ 
+		$date=date('Y-m-d');
+		$this->db->select('*');
+		$this->db->from('icw_invoice_0317');		
+		$this->db->where('icw_invoDate0317 BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()');
+		$query=$this->db->get()->result();
+		$msgData='week';
+			$qry=array('queryData'=>$query,'msgData'=>$msgData);
+		return $qry;
+	}
+  if($day == 'month'){
+		
+		$this->db->select('*');
+		$this->db->from('icw_invoice_0317');
+		$this->db->where('icw_invoDate0317 BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW()');
+		$query=$this->db->get()->result();
+		$msgData='month';
+			$qry=array('queryData'=>$query,'msgData'=>$msgData);
+		return $qry;
+	}
+}
+
+public function dashboardDataDetails(){
+	
+		$queryTotalSales=$this->db->get('icw_invoice_0317');
+		$queryTotalSales=$queryTotalSales->num_rows();
+		
+		$TotalRegistration=$this->db->get('icw_clients_0317');
+		$TotalRegistration=$TotalRegistration->num_rows();
+		
+		$this->db->select('sum(icw_amtWithTax0317) as icw_amtWithTax0317,sum(icw_paidAmount0317) as icw_paidAmount0317,sum(icw_balanceAmt0317) as icw_balanceAmt0317');
+		$this->db->from('icw_invoice_0317');
+		$totalAmtDt=$this->db->get()->row();
+		
+		$this->db->select('icw_amtWithTax0317,icw_invoDate0317');
+		$this->db->from('icw_invoice_0317');		
+		$this->db->where('icw_invoDate0317 BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()');
+		$queryWeekData=$this->db->get()->result();
+		$qry=array('queryWeekData'=>$queryWeekData,'queryTotalSales'=>$queryTotalSales,'TotalRegistration'=>$TotalRegistration,'totalAmtDt'=>$totalAmtDt);		
+		return $qry;
+}
+
+}
+?>

@@ -1,0 +1,167 @@
+<?php 
+
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Client extends CI_Controller{
+
+	public function __construct(){
+		parent::__construct();
+		 if(!$this->session->userdata("username"))
+            {
+                 redirect('welcome/index');
+            }
+
+		$this->load->model('ClientModel');
+
+	}
+
+public function index(){
+	$data['page_title']='Client List';
+	$data['getClient']=$this->ClientModel->getClient();
+	$this->load->view('client/client_list',$data);
+}
+public function addClients(){
+	//echo $action = $this->input->get('updt');
+	$id =$this->uri->segment(3);
+	$data=array();
+	$id=isset($id)?$id:'';
+	if($id){
+	$data['page_title']='Add Client';
+	$data['getClientById']=$this->ClientModel->getClientById($id);
+	$data['getCountry']=$this->ClientModel->getCountry();
+	$this->load->view('client/client',$data);
+	}else{
+	$data['page_title']='Add Client';
+	$data['getClientById']='';
+	$data['getCountry']=$this->ClientModel->getCountry();
+	$this->load->view('client/client',$data);
+	}
+}
+
+public function addClient()
+{ 
+	
+		 $action = $this->input->get('updt');
+		 $id = $this->input->post('hidden_id'); 
+		 $ajax = $this->input->post('hidden_ajax');
+		
+	     $cName = $this->input->post('cName');
+		 $cMobile = $this->input->post('cMobile');
+		 $cEmail = $this->input->post('cEmail');
+		 $cBusinessTitle = $this->input->post('cBusinessTitle');
+		 $cGrn = $this->input->post('cGrn');
+		 $cAddress1 = $this->input->post('cAddress1');
+		 $cAddress2 = $this->input->post('cAddress2');
+		 $city = $this->input->post('city');
+		 $state = $this->input->post('state');
+		 $postalCode = $this->input->post('postalCode');
+		 $country = $this->input->post('country');
+		 $image = $_FILES["image"]["name"]; 
+		
+	if($image!=''){
+	  $_FILES['userfile']['name']     = $_FILES['image']['name'];
+      $_FILES['userfile']['type']     = $_FILES['image']['type'];
+      $_FILES['userfile']['tmp_name'] = $_FILES['image']['tmp_name'];
+      $_FILES['userfile']['error']    = $_FILES['image']['error'];
+      $_FILES['userfile']['size']     = $_FILES['image']['size'];
+      $config = array(
+        'allowed_types' => 'jpg|jpeg|png|gif',
+        'max_size'      => 3000,
+        'overwrite'     => FALSE,
+        'upload_path'=> './uploads/client-images/'
+      );
+	  $this->load->library('upload');
+      $this->upload->initialize($config);
+	  if ( ! $this->upload->do_upload()){
+        $this->session->set_flashdata('message_error', 'Product Not Added cause of image, please select image!');
+        redirect('product/addPro');   
+	  }else{
+        $final_files_data[] = $this->upload->data(); 
+	  }
+   }
+
+	if($ajax='ajaxData' && $ajax!='')
+	{		
+		$result=$this->ClientModel->addClient('',$cName,$cMobile,$cEmail,$cBusinessTitle,$cGrn,$cAddress1,$cAddress2,$city,$state,$postalCode,$country,$image);
+			if($result == TRUE)
+			{
+				echo 1;
+			}else{
+				echo 0;
+			}
+		
+	}else{
+   
+	if($action='update')
+	{ 
+		$result=$this->ClientModel->addClient($id,$cName,$cMobile,$cEmail,$cGrn,$cBusinessTitle,$cAddress1,$cAddress2,$city,$state,$postalCode,$country,$image);
+			if($result == TRUE)
+			{
+				$this->session->set_flashdata('message_success', 'Client Info Updated Successfully!');
+				redirect('Client/index');
+			}else{
+				$this->session->set_flashdata('message_error', 'Client Info Not Updated!');
+				redirect('Client/index');
+			}
+	
+	}
+	else{ 		
+		$result=$this->ClientModel->addClient('',$cName,$cMobile,$cEmail,$cBusinessTitle,$cGrn,$cAddress1,$cAddress2,$city,$state,$postalCode,$country,$image);
+			if($result == TRUE)
+			{
+				$this->session->set_flashdata('message_success', 'Client Info Added Successfully!');
+				redirect('Client/index');
+			}else{
+				$this->session->set_flashdata('message_error', 'Client Info Not Added!');
+				redirect('Client/index');
+			}
+		
+	}
+  }
+		
+}
+
+function getClientInfo(){
+	$id=$_REQUEST['term']; 
+	$res=$this->ClientModel->getClientById($id);
+	if($res){
+		$result=json_encode($res);
+		echo $result;
+	}
+	
+}
+
+function clientDetail(){
+	//$id=$this->uri->segment(3); 
+	$id=$_REQUEST['client_Id'];
+	$client_id=$_REQUEST['client_Id'];
+	$this->load->model('ReportModel');
+	$data['balSummary']=$this->ReportModel->getBalSummary($client_id);
+	$data['clientDt']=$this->ClientModel->getClientById($id);
+	$data['clientPurchaseDetails']=$this->ClientModel->purchaseDetails($client_id);
+	$data['page_title']='Client Details';
+	
+		$this->load->view('client/client_details',$data);		
+}
+
+function getClientByDt(){
+	$clntName=$this->input->get('clntName');
+    $clntMobile=$this->input->get('clntMobile');
+	$data['getData']=$this->ClientModel->getClntByDt($clntName,$clntMobile);
+	$this->load->view('client/client_data',$data);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+ ?>

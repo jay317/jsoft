@@ -1,0 +1,208 @@
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Horizontal Form -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <div><h2 class="box-title">
+			  <a href="<?php echo site_url('mainController/dashboard');?>" class="btn btn-default btn-js"><i class="fa fa-arrow-left" aria-hidden="true" align="left"></i></a>
+			  &nbsp;&nbsp;&nbsp;Update Profile</h2><span style="float:right;">Created date:&nbsp;<?php if($currUser->icw_userDate0317 !=''){echo $currUser->icw_userDate0317;}?></span></div>
+            </div>
+			<?php if ($this->session->flashdata('user_msg_error')) { ?>
+				<div class="alert alert-danger col-md-4 col-md-offset-4"> <?= $this->session->flashdata('user_msg_error') ?> </div>
+			<?php } ?>
+			<?php if ($this->session->flashdata('user_msg_success')) { ?>
+				<div class="alert alert-info col-md-4 col-md-offset-4"> <?= $this->session->flashdata('user_msg_success') ?> </div>
+			<?php } ?>
+            <!-- /.box-header -->
+            <!-- form start -->           
+              <div class="row" style="margin-top:15px;">
+			  <div class="col-md-2 panel panel-default box-body">
+				  <div class="row form-group" style="height:100px;">
+					<center>
+					<span class="fig"style="margin:10px;"><i class="fa fa-spinner" aria-hidden="true" style="display:none;"></i>							
+			 					<?php if($currUser->icw_userImg0317 !=''){ ?>
+								<img class="scaled img-circle" src="<?php echo base_url();?>uploads/user-images/<?php echo $currUser->icw_userImg0317;?>" style="width:100px;height:100px;float:none;"/>
+								<?php }else{ ?>
+								<img class="scaled img-circle" src="<?php echo base_url();?>assets/images/profile-icon.png" style="width:100px;height:100px;"/>
+								<?php } ?>						
+					</span>
+					</center>
+					</div>
+					<!-- update profile pic-->
+					<form enctype="multipart/form-data" id="uploadForm">
+						<input type="file" name="image" id="image" class="form-control"/>
+						<button type="submit" class="btn btn-info img_upload form-control"/><strong>Upload</strong></button>
+					</form>
+					<!-- -->
+					
+			  </div>			 
+			  <div class="col-md-3 panel panel-default box-body">
+			  <!-- update full name and username-->
+			 <div class="NameFrm-row">
+			 <form id="updtNameForm">
+			  <span class="span_msg"style="display:none;"></span>
+                <div class="form-group">
+                  <label for="userFullName" class="control-labe">Full Name</label>
+                  <div class="input-group">              
+                  <span class="input-group-addon">
+					<span class="glyphicon glyphicon-record"></span>
+				  </span>
+					<input type="text" value="<?php if($currUser->icw_userFname0317!=''){echo $currUser->icw_userFname0317;}?>" class="form-control" name="userFullName" id="userFullName" required placeholder="Full Name">
+				  </div>
+                </div>
+				<div class="form-group">
+                  <label for="userName" class="control-label">User Name</label>
+                  <div class="input-group">              
+                  <span class="input-group-addon">
+					<span class="glyphicon glyphicon-user"></span>
+				  </span>
+					<input type="text" value="<?php if($currUser->icw_userName0317!=''){echo $currUser->icw_userName0317;}?>" class="form-control" name="userName" id="userName" required placeholder="User Name">
+				  </div>
+                </div>
+				<div class="form-group">
+				 <button type="submit" class="btn btn-info">Update</button>
+				</div>
+				</form>
+				</div>
+				<!-- -->
+				<!-- change password here-->
+				<div class="PwdFrm-row">
+				<h4 class="pwd-h4">Change Password</h4>
+				<form id="updtPwdForm" name="updtPwdForm">
+				<span class="span_msg2"style="display:none;"></span>
+				<div class="form-group">
+                  <label for="uPwd" class="control-label">Current Password</label>
+                  <div class="input-group">
+				  <span class="input-group-addon">
+					<span class="glyphicon glyphicon-lock"></span>
+				  </span>
+                    <input type="text" value="" class="form-control" name="uPwd" id="uPwd" required placeholder="Password">
+                  </div>
+                </div>
+				<div class="form-group">
+                  <label for="unPwd" class="control-label">New Password</label>
+                  <div class="input-group">
+				  <span class="input-group-addon">
+					<span class="glyphicon glyphicon-th"></span>
+				  </span>
+                    <input type="text" value="" class="form-control" name="unPwd" id="unPwd" required placeholder="Password">
+                  </div>
+                </div>			
+			  <div class="box-footer">
+                <button type="submit" class="btn btn-info">Submit</button>
+              </div>
+			  </form>
+			  </div>
+			  <!-- -->
+              </div>
+              <!-- /.box-body -->
+			  </div>
+              <!-- /.box-footer -->
+            
+          </div>
+		  </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <div class="control-sidebar-bg"></div>
+</div>
+
+<style>
+  .error {
+   color: #ff0000;
+   font-size:10px;
+  }
+</style>
+<script>
+$(document).ready(function(){  
+      $('#updtPwdForm').on('submit', function(e){  
+           e.preventDefault();  		 				
+                $.ajax({  
+                     url:"<?php echo site_url('mainController/proPwdUpdate');?>",                       
+                     method:"post",  
+                     data:new FormData(this),  
+                     contentType: false,  
+                     cache: false,  
+                     processData:false,  
+                     success:function(data)  
+                     {  
+						if(data==1)
+						{						        						 
+							$(".span_msg2").show();							
+							$(".span_msg2").html("<strong>Password Successfully Changed &nbsp;&nbsp;&nbsp;<i class='fa fa-check' aria-hidden='true'></i></strong>").css("color","green");
+							$("#uPwd").val("");
+							$("#unPwd").val("")
+						}else if(data ==0){
+							$(".span_msg2").show();
+							$(".span_msg2").html("<strong>Password Not Changed &nbsp;&nbsp;&nbsp;<i class='fa fa-times' aria-hidden='true'></i></strong>").css("color","red");							
+						}else if(data ==2){
+							$(".span_msg2").show();
+							$(".span_msg2").html("<strong>Current Password Not Match &nbsp;&nbsp;&nbsp;<i class='fa fa-times' aria-hidden='true'></i></strong>").css("color","red");						
+						}                             
+                     }  
+                });	
+      });  
+ });
+ $(document).ready(function(){  
+      $('#updtNameForm').on('submit', function(e){  
+           e.preventDefault();            
+                $.ajax({  
+                     url:"<?php echo site_url('mainController/proNameUpdate');?>",                       
+                     method:"post",  
+                     data:new FormData(this),  
+                     contentType: false,  
+                     cache: false,  
+                     processData:false,  
+                     success:function(data)  
+                     {  
+						if(data == '1')
+						{						        						 
+							$(".span_msg").show();
+							$(".span_msg").html("<strong>Successfully Updated &nbsp;&nbsp;&nbsp;<i class='fa fa-check' aria-hidden='true'></i></strong>").css("color","green");	
+							$("#userFullName").load(location.href + " #userFullName");
+							$("#userName").load(location.href + " #userName");
+						}else if(data == '0'){
+							$(".span_msg").html("<strong>Not Updated &nbsp;&nbsp;&nbsp;<i class='fa fa-times' aria-hidden='true'></i></strong>").css("color","red");
+						}                            
+                     }  
+                });    
+      });  
+ });
+
+$(document).ready(function(){  
+      $('#uploadForm').on('submit', function(e){  
+           e.preventDefault();  
+           if($('#image').val() == '')  
+           {  
+                alert("Please Select the File");  
+           }  
+           else  
+           {  
+                $.ajax({  
+                     url:"<?php echo site_url('mainController/proImgUpdate');?>",                       
+                     method:"POST",  
+                     data:new FormData(this),  
+                     contentType: false,  
+                     cache: false,  
+                     processData:false,  
+                     success:function(data)  
+                     {  //alert(data);
+						if(data == '1')
+						{							 
+							$(".fa-spinner").show("slow");
+							$(".fig").load(location.href + " .fig");
+							$(".fa-spinner").hide();
+						}else if(data == '0'){
+							alert("Image not uploaded!");
+						}                            
+                     }  
+                });  
+           }  
+      });  
+ });  
+
+</script>
